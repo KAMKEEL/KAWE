@@ -1,6 +1,7 @@
 package com.boydti.fawe;
 
 import com.boydti.fawe.object.PseudoRandom;
+import com.boydti.fawe.util.MainUtil;
 import com.sk89q.jnbt.*;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.blocks.*;
@@ -250,7 +251,13 @@ public class FaweCache {
     }
 
     public static final BaseBlock getBlock(int index) {
-        return CACHE_BLOCK[index];
+        try {
+            return CACHE_BLOCK[index];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("[LDFAWE] INDEX OOB BUG FOR VALUE " + index);
+            MainUtil.handleError(e, false);
+            return CACHE_BLOCK[0];
+        }
     }
 
     public static final BaseBlock[] getBlocks() {

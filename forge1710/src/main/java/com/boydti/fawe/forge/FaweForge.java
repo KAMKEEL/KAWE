@@ -64,7 +64,7 @@ public class FaweForge implements IFawe {
 
     @Override
     public void debug(String s) {
-        logger.error(s);
+        logger.debug(s);
     }
 
     @Override
