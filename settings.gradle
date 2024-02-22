@@ -1,3 +1,3 @@
 rootProject.name = 'LDFAWE'
 
-include 'core', 'bukkit', 'forge1710' //, 'nukkit', 'forge189', 'forge194', 'forge110', 'forge111', 'forge112', 'forge1710', 'sponge112', 'sponge111'
+include 'core', 'bukkit', 'forge1710'
