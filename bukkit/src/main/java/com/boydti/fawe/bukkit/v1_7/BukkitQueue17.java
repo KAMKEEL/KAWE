@@ -518,11 +518,11 @@ public class BukkitQueue17 extends BukkitQueue_0<net.minecraft.server.v1_7_R4.Ch
                     }
                     for (EntityPlayer player : players) {
                         if (mask == 0 || mask == 65535 && hasEntities(nmsChunk)) {
-                            PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, 65280);
+                            PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, 65280, 5);
                             player.playerConnection.sendPacket(packet);
                             mask = 255;
                         }
-                        PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, mask);
+                        PacketPlayOutMapChunk packet = new PacketPlayOutMapChunk(nmsChunk, false, mask, 5);
                         player.playerConnection.sendPacket(packet);
                     }
                     if (empty) {

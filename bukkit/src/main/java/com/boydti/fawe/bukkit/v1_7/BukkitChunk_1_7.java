@@ -73,8 +73,8 @@ public class BukkitChunk_1_7 extends CharFaweChunk<Chunk, BukkitQueue17> {
 
     @Override
     public void setBlock(int x, int y, int z, int id, int data) {
-        int i = FaweCache.CACHE_I[y][z][x];
-        int j = FaweCache.CACHE_J[y][z][x];
+        int i = FaweCache.getI(y, z, x);
+        int j = FaweCache.getJ(y, z, x);
         byte[] vs = this.byteIds[i];
         char[] vs2 = this.ids[i];
         if (vs2 == null) {
@@ -184,7 +184,7 @@ public class BukkitChunk_1_7 extends CharFaweChunk<Chunk, BukkitQueue17> {
                                 int z = (MathMan.roundInt(entity.locZ) & 15);
                                 int y = MathMan.roundInt(entity.locY);
                                 if (y < 0 || y > 255) continue;
-                                if (array[FaweCache.CACHE_J[y][z][x]] != 0) {
+                                if (array[FaweCache.getJ(y, z, x)] != 0) {
                                     nmsWorld.removeEntity(entity);
                                 }
                             }
@@ -389,12 +389,12 @@ public class BukkitChunk_1_7 extends CharFaweChunk<Chunk, BukkitQueue17> {
                 int lx = pos.x & 15;
                 int ly = pos.y;
                 int lz = pos.z & 15;
-                int j = FaweCache.CACHE_I[ly][lz][lx];
+                int j = FaweCache.getI(ly, lz, lx);
                 char[] array = this.getIdArray(j);
                 if (array == null) {
                     continue;
                 }
-                int k = FaweCache.CACHE_J[ly][lz][lx];
+                int k = FaweCache.getJ(ly, lz, lx);
                 if (array[k] != 0) {
                     if (toRemove == null) {
                         toRemove = new HashMap<>();

@@ -845,12 +845,12 @@ public class BukkitQueue_1_12 extends BukkitQueue_0<net.minecraft.server.v1_12_R
                     int x = (MathMan.roundInt(ent.locX) & 15);
                     int z = (MathMan.roundInt(ent.locZ) & 15);
                     int y = (MathMan.roundInt(ent.locY) & 0xFF);
-                    int i = FaweCache.CACHE_I[y][z][x];
+                    int i = FaweCache.getI(y, z, x);
                     char[] array = fs.getIdArray(i);
                     if (array == null) {
                         continue;
                     }
-                    int j = FaweCache.CACHE_J[y][z][x];
+                    int j = FaweCache.getJ(y, z, x);
                     if (array[j] != 0) {
                         String id = EntityTypes.b(ent);
                         if (id != null) {
