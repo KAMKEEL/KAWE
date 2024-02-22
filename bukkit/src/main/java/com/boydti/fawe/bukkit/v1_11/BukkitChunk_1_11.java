@@ -86,8 +86,8 @@ public class BukkitChunk_1_11 extends CharFaweChunk<Chunk, com.boydti.fawe.bukki
         int x = (MathMan.roundInt(ent.locX) & 15);
         int z = (MathMan.roundInt(ent.locZ) & 15);
         int y = (MathMan.roundInt(ent.locY) & 0xFF);
-        int i = FaweCache.CACHE_I[y][z][x];
-        int j = FaweCache.CACHE_J[y][z][x];
+        int i = FaweCache.getI(y, z, x);
+        int j = FaweCache.getJ(y, z, x);
         String id = EntityTypes.b(ent);
         if (id != null) {
             NBTTagCompound tag = new NBTTagCompound();
@@ -191,7 +191,7 @@ public class BukkitChunk_1_11 extends CharFaweChunk<Chunk, com.boydti.fawe.bukki
                 for (int y = 0; y < 16; y++) {
                     for (int z = 0; z < 16; z++) {
                         for (int x = 0; x < 16; x++) {
-                            char combinedId = blocks[FaweCache.CACHE_J[y][z][x]];
+                            char combinedId = blocks[FaweCache.getJ(y, z, x)];
                             if (combinedId > 1) {
                                 palette.setBlock(x, y, z, Block.getById(combinedId >> 4).fromLegacyData(combinedId & 0xF));
                             }
@@ -289,7 +289,7 @@ public class BukkitChunk_1_11 extends CharFaweChunk<Chunk, com.boydti.fawe.bukki
                             int z = (MathMan.roundInt(entity.locZ) & 15);
                             int y = MathMan.roundInt(entity.locY);
                             if (y < 0 || y > 255) continue;
-                            if (array[FaweCache.CACHE_J[y][z][x]] != 0) {
+                            if (array[FaweCache.getJ(y, z, x)] != 0) {
                                 if (copy != null) {
                                     copy.storeEntity(entity);
                                 }
@@ -399,7 +399,7 @@ public class BukkitChunk_1_11 extends CharFaweChunk<Chunk, com.boydti.fawe.bukki
                 int nonEmptyBlockCount = 0;
                 IBlockData existing;
                 for (int y = 0; y < 16; y++) {
-                    short[][] i1 = FaweCache.CACHE_J[y];
+                    short[][] i1 = FaweCache.getJ(y);
                     for (int z = 0; z < 16; z++) {
                         short[] i2 = i1[z];
                         for (int x= 0; x < 16; x++) {
@@ -442,12 +442,12 @@ public class BukkitChunk_1_11 extends CharFaweChunk<Chunk, com.boydti.fawe.bukki
                 int lx = pos.getX() & 15;
                 int ly = pos.getY();
                 int lz = pos.getZ() & 15;
-                int j = FaweCache.CACHE_I[ly][lz][lx];
+                int j = FaweCache.getI(ly, lz, lx);
                 char[] array = this.getIdArray(j);
                 if (array == null) {
                     continue;
                 }
-                int k = FaweCache.CACHE_J[ly][lz][lx];
+                int k = FaweCache.getJ(ly, lz, lx);
                 if (array[k] != 0) {
                     if (toRemove == null) {
                         toRemove = new HashMap<>();

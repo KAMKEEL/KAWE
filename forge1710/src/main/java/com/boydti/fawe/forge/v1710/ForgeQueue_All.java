@@ -168,7 +168,7 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
         byte[] ids = ls.getBlockLSBArray();
         NibbleArray currentDataArray = ls.getMetadataArray();
         NibbleArray currentExtraArray = ls.getBlockMSBArray();
-        int i = FaweCache.CACHE_J[y & 15][z & 15][x & 15];
+        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
         int id = (ids[i] & 0xFF);
         if (currentExtraArray != null) {
             id += (currentExtraArray.get(x & 15, y & 15, z & 15)) << 8;
@@ -412,9 +412,9 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                     NibbleArray currentDataArray = section.getMetadataArray();
                     char[] array = new char[4096];
                     for (int j = 0; j < currentIdArray.length; j++) {
-                        int x = FaweCache.CACHE_X[layer][j];
-                        int y = FaweCache.CACHE_Y[layer][j];
-                        int z = FaweCache.CACHE_Z[layer][j];
+                        int x = FaweCache.getX(layer, j);
+                        int y = FaweCache.getY(layer, j);
+                        int z = FaweCache.getZ(layer, j);
                         int id = currentIdArray[j] & 0xFF;
                         byte data = (byte) (currentDataArray != null ? currentDataArray.get(x, y & 15, z) : 0);
                         previous.setBlock(x, y, z, id, data);
@@ -441,12 +441,12 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                     int x = (MathMan.roundInt(ent.posX) & 15);
                     int z = (MathMan.roundInt(ent.posZ) & 15);
                     int y = MathMan.roundInt(ent.posY);
-                    int i = FaweCache.CACHE_I[y][z][x];
+                    int i = FaweCache.getI(y, z, x);
                     char[] array = fs.getIdArray(i);
                     if (array == null) {
                         continue;
                     }
-                    int j = FaweCache.CACHE_J[y][z][x];
+                    int j = FaweCache.getJ(y, z, x);
                     if (array[j] != 0) {
                         String id = EntityList.getEntityString(ent);
                         if (id != null) {
@@ -564,7 +564,7 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
 
     @Override
     public boolean hasBlock(ExtendedBlockStorage section, int x, int y, int z) {
-        int i = FaweCache.CACHE_J[y & 15][z & 15][x & 15];
+        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
         return section.getBlockLSBArray()[i] != 0;
     }
 

@@ -254,9 +254,9 @@ public class BukkitChunk_All extends CharFaweChunk<Chunk, BukkitQueue_All> {
                 if (newArray == null) {
                     continue;
                 }
-                final byte[] cacheX = FaweCache.CACHE_X[layer];
-                final short[] cacheY = FaweCache.CACHE_Y[layer];
-                final byte[] cacheZ = FaweCache.CACHE_Z[layer];
+                final byte[] cacheX = FaweCache.getX(layer);
+                final short[] cacheY = FaweCache.getY(layer);
+                final byte[] cacheZ = FaweCache.getZ(layer);
                 boolean checkTime = !((getAir(layer) == 4096 || (getCount(layer) == 4096 && getAir(layer) == 0) || (getCount(layer) == getAir(layer))));
                 if (!checkTime) {
                     final ArrayList<Thread> threads = new ArrayList<Thread>();
