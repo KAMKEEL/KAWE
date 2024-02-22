@@ -423,13 +423,22 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 ExtendedBlockStorage section = sections[layer];
                 if (section != null) {
                     byte[] currentIdArray = section.getBlockLSBArray();
-                    NibbleArray currentDataArray = section.getMetadataArray();
-                    char[] array = new char[4096];
+                    NibbleArray currentExtendedArray = section.getBlockMSBArray(); // Get the extended array
+                    NibbleArray currentDataArray = section.getMetadataArray(); // Get the metadata array
+
                     for (int j = 0; j < currentIdArray.length; j++) {
                         int x = FaweCache.getX(layer, j);
                         int y = FaweCache.getY(layer, j);
                         int z = FaweCache.getZ(layer, j);
-                        int id = currentIdArray[j] & 0xFF;
+
+                        int idLSB = currentIdArray[j] & 0xFF; // Extract LSB ID
+
+                        // Extract MSB ID and handle cases where the extended array is null
+                        int idMSB = currentExtendedArray != null ? currentExtendedArray.get(x, y & 15, z) & 0xFF : 0;
+
+                        // Combine LSB and MSB to get the final ID
+                        int id = (idMSB << 8) | idLSB;
+
                         byte data = (byte) (currentDataArray != null ? currentDataArray.get(x, y & 15, z) : 0);
                         previous.setBlock(x, y, z, id, data);
                     }
