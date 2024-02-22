@@ -1,14 +1,25 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
-        maven {url = "https://oss.sonatype.org/content/repositories/snapshots/"}
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = "jitpack"
+            url = "https://jitpack.io"
+        }
+        maven {
+            name = "gt"
+            url = "https://gregtech.mechaenetia.com/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
     }
 }
 
@@ -20,18 +31,12 @@ clean { delete "../target" }
 dependencies {
     compile project(':core')
     compile 'com.sk89q.worldedit:worldedit-forge-mc1.7.10:6.1.1-20151030.011615-19'
-    compile 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    compile 'com.github.GTNewHorizons:ForgeGradle:1.2.11'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-    maven {
-        name = 'forge'
-        url = 'https://files.minecraftforge.net/maven'
-    }
-}
 minecraft {
     version = "10.13.4.1614-1.7.10"
     runDir = 'run'
