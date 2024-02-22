@@ -391,8 +391,22 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
 
     public void setCount(int tickingBlockCount, int nonEmptyBlockCount, ExtendedBlockStorage section) throws NoSuchFieldException, IllegalAccessException {
         Class<? extends ExtendedBlockStorage> clazz = section.getClass();
-        Field fieldTickingBlockCount = clazz.getDeclaredField("field_76683_c"); // tickRefCount
-        Field fieldNonEmptyBlockCount = clazz.getDeclaredField("field_76682_b"); // blockRefCount
+        Field fieldTickingBlockCount;
+        Field fieldNonEmptyBlockCount;
+        try {
+            fieldTickingBlockCount = clazz.getDeclaredField("field_76683_c"); // tickRefCount
+        }
+        catch (NoSuchFieldException ignored){
+            fieldTickingBlockCount = clazz.getDeclaredField("tickRefCount");
+        }
+
+        try {
+            fieldNonEmptyBlockCount = clazz.getDeclaredField("field_76682_b"); // blockRefCount
+        }
+        catch (NoSuchFieldException ignored){
+            fieldNonEmptyBlockCount = clazz.getDeclaredField("blockRefCount"); // blockRefCount
+        }
+
         fieldTickingBlockCount.setAccessible(true);
         fieldNonEmptyBlockCount.setAccessible(true);
         fieldTickingBlockCount.set(section, tickingBlockCount);

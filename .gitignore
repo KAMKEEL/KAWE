@@ -36,6 +36,7 @@ wiki_permissions.md
 *.iml
 /obj
 docs/
+/forge1710/run
 
 bukkit/bin/
 core/bin/
