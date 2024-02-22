@@ -4,7 +4,7 @@
 
 ---
 
-# This is the legacy version of FAWE (1.7.10). Built and Backported to work with 1.7.10 Forge (an alpha version from the original team)
+# This is the legacy version of FAWE (1.7.10) Nicknamed: KAWE ;D . Built and Backported to work with 1.7.10 Forge (an alpha version from the original team)
 > It is not maintained by the FAWE team. You can find the newer version of FAWE [here](https://github.com/IntellectualSites/FastAsyncWorldEdit).
 
 FAWE is a fork of WorldEdit that has huge speed and memory improvements and considerably more features
