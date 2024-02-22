@@ -364,7 +364,7 @@ public class BukkitQueue17 extends BukkitQueue_0<net.minecraft.server.v1_7_R4.Ch
     public int getCombinedId4Data(ChunkSection ls, int x, int y, int z) {
         byte[] ids = ls.getIdArray();
         NibbleArray datasNibble = ls.getDataArray();
-        int i = FaweCache.CACHE_J[y & 15][z & 15][x & 15];
+        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
         int combined = ((ids[i] & 0xFF)  << 4) + (datasNibble == null ? 0 : datasNibble.a(x & 15, y & 15, z & 15));
         return combined;
     }
@@ -382,9 +382,9 @@ public class BukkitQueue17 extends BukkitQueue_0<net.minecraft.server.v1_7_R4.Ch
                     NibbleArray currentDataArray = section.getDataArray();
                     char[] array = new char[4096];
                     for (int j = 0; j < currentIdArray.length; j++) {
-                        int x = FaweCache.CACHE_X[layer][j];
-                        int y = FaweCache.CACHE_Y[layer][j];
-                        int z = FaweCache.CACHE_Z[layer][j];
+                        int x = FaweCache.getX(layer, j);
+                        int y = FaweCache.getY(layer, j);
+                        int z = FaweCache.getZ(layer, j);
                         int id = currentIdArray[j] & 0xFF;
                         byte data = (byte) currentDataArray.a(x, y & 15, z);
                         previous.setBlock(x, y, z, id, data);
@@ -410,12 +410,12 @@ public class BukkitQueue17 extends BukkitQueue_0<net.minecraft.server.v1_7_R4.Ch
                     int x = (MathMan.roundInt(ent.locX) & 15);
                     int z = (MathMan.roundInt(ent.locZ) & 15);
                     int y = (MathMan.roundInt(ent.locY) & 0xFF);
-                    int i = FaweCache.CACHE_I[y][z][x];
+                    int i = FaweCache.getI(y, z, x);
                     char[] array = fs.getIdArray(i);
                     if (array == null) {
                         continue;
                     }
-                    int j = FaweCache.CACHE_J[y][z][x];
+                    int j = FaweCache.getJ(y, z, x);
                     if (array[j] != 0) {
                         String id = EntityTypes.b(ent);
                         if (id != null) {
@@ -689,7 +689,7 @@ public class BukkitQueue17 extends BukkitQueue_0<net.minecraft.server.v1_7_R4.Ch
 
     @Override
     public boolean hasBlock(ChunkSection section, int x, int y, int z) {
-        int i = FaweCache.CACHE_J[y & 15][z & 15][x & 15];
+        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
         return section.getIdArray()[i] != 0;
     }
 

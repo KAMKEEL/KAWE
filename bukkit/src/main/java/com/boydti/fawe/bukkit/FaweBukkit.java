@@ -19,13 +19,7 @@ import com.boydti.fawe.bukkit.v0.BukkitQueue_0;
 import com.boydti.fawe.bukkit.v0.BukkitQueue_All;
 import com.boydti.fawe.bukkit.v0.ChunkListener_8;
 import com.boydti.fawe.bukkit.v0.ChunkListener_9;
-import com.boydti.fawe.bukkit.v1_10.BukkitQueue_1_10;
-import com.boydti.fawe.bukkit.v1_11.BukkitQueue_1_11;
-import com.boydti.fawe.bukkit.v1_12.BukkitQueue_1_12;
-import com.boydti.fawe.bukkit.v1_12.NMSRegistryDumper;
 import com.boydti.fawe.bukkit.v1_7.BukkitQueue17;
-import com.boydti.fawe.bukkit.v1_8.BukkitQueue18R3;
-import com.boydti.fawe.bukkit.v1_9.BukkitQueue_1_9_R1;
 import com.boydti.fawe.config.BBC;
 import com.boydti.fawe.config.Settings;
 import com.boydti.fawe.object.FaweCommand;
@@ -635,15 +629,7 @@ public class FaweBukkit implements IFawe, Listener {
                 try {
                     BukkitQueue_0.checkVersion(v.name());
                     this.version = tmp = v;
-                    if (tmp == Version.v1_12_R1) {
-                        try {
-                            System.out.println("Running 1.12 registry dumper!");
-                            NMSRegistryDumper dumper = new NMSRegistryDumper(MainUtil.getFile(plugin.getDataFolder(), "extrablocks.json"));
-                            dumper.run();
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    if (tmp == Version.v1_12_R1) {}
                     break;
                 } catch (IllegalStateException e) {}
             }
@@ -667,16 +653,6 @@ public class FaweBukkit implements IFawe, Listener {
         switch (getVersion()) {
             case v1_7_R4:
                 return new BukkitQueue17(world);
-            case v1_8_R3:
-                return new BukkitQueue18R3(world);
-            case v1_9_R2:
-                return new BukkitQueue_1_9_R1(world);
-            case v1_10_R1:
-                return new BukkitQueue_1_10(world);
-            case v1_11_R1:
-                return new BukkitQueue_1_11(world);
-            case v1_12_R1:
-                return new BukkitQueue_1_12(world);
             default:
             case NONE:
                 return new BukkitQueue_All(world);
@@ -687,16 +663,6 @@ public class FaweBukkit implements IFawe, Listener {
         switch (getVersion()) {
             case v1_7_R4:
                 return new BukkitQueue17(world);
-            case v1_8_R3:
-                return new BukkitQueue18R3(world);
-            case v1_9_R2:
-                return new BukkitQueue_1_9_R1(world);
-            case v1_10_R1:
-                return new BukkitQueue_1_10(world);
-            case v1_11_R1:
-                return new BukkitQueue_1_11(world);
-            case v1_12_R1:
-                return new BukkitQueue_1_12(world);
             default:
             case NONE:
                 return new BukkitQueue_All(world);
