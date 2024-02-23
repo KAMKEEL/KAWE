@@ -85,8 +85,8 @@ public class ForgePlayer extends AbstractPlayerActor {
         return new Location(
                 ForgeWorldEdit.inst.getWorld(this.player.worldObj),
                 position,
-                this.player.cameraYaw,
-                this.player.cameraPitch);
+                this.player.rotationYaw,
+                this.player.rotationPitch);
     }
 
     @Override
