@@ -35,7 +35,7 @@ public class ForgeTaskMan extends TaskManager {
         if (r == null) {
             return -1;
         }
-        final int id = taskId.incrementAndGet();
+        int id = taskId.incrementAndGet();
         taskIdMap.put(id, r);
         task(new Runnable() {
             @Override
@@ -78,11 +78,11 @@ public class ForgeTaskMan extends TaskManager {
     }
 
     @Override
-    public int repeatAsync(final Runnable r, final int interval) {
+    public int repeatAsync(Runnable r, int interval) {
         if (r == null) {
             return -1;
         }
-        final int id = taskId.incrementAndGet();
+        int id = taskId.incrementAndGet();
         taskIdMap.put(id, r);
         async(new Runnable() {
             @Override
@@ -118,11 +118,11 @@ public class ForgeTaskMan extends TaskManager {
     }
 
     @Override
-    public void later(final Runnable r, final int delay) {
+    public void later(Runnable r, int delay) {
         if (r == null) {
             return;
         }
-        final AtomicInteger remaining = new AtomicInteger(delay);
+        AtomicInteger remaining = new AtomicInteger(delay);
         task(new Runnable() {
             @Override
             public void run() {
@@ -140,11 +140,11 @@ public class ForgeTaskMan extends TaskManager {
     }
 
     @Override
-    public void laterAsync(final Runnable r, final int delay) {
+    public void laterAsync(Runnable r, int delay) {
         if (r == null) {
             return;
         }
-        final AtomicInteger remaining = new AtomicInteger(delay);
+        AtomicInteger remaining = new AtomicInteger(delay);
         task(new Runnable() {
             @Override
             public void run() {
