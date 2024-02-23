@@ -43,7 +43,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Command(aliases = {"worldedit", "we", "fawe"}, desc = "Updating, informational, debug and help commands")
+@Command(aliases = {"worldedit", "we", "fawe", "kawe"}, desc = "Updating, informational, debug and help commands")
 public class WorldEditCommands {
     private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
@@ -56,14 +56,14 @@ public class WorldEditCommands {
     @Command(
             aliases = {"version", "ver"},
             usage = "",
-            desc = "Get WorldEdit/FAWE version",
+            desc = "Get WorldEdit/FAWE/KAWE version",
             min = 0,
             max = 0
     )
     public void version(Actor actor) throws WorldEditException {
         FaweVersion fVer = Fawe.get().getVersion();
         String fVerStr = fVer == null ? "unknown" : fVer.year + "." + fVer.month + "." + fVer.day + "-" + Integer.toHexString(fVer.hash) + "-" + fVer.build;
-        actor.print(BBC.getPrefix() + "FAWE " + fVerStr + " by Empire92");
+        actor.print(BBC.getPrefix() + "KAWE " + fVerStr + " by Kam");
         if (fVer != null) {
             actor.printDebug("------------------------------------");
             FaweVersion version = Fawe.get().getVersion();
@@ -76,7 +76,7 @@ public class WorldEditCommands {
             if (updater == null) {
                 actor.printDebug(" - UPDATES: DISABLED");
             } else if (updater.isOutdated()) {
-                actor.printDebug(" - UPDATES: " + updater.getChanges().split("\n").length + " (see /fawe cl)");
+                actor.printDebug(" - UPDATES: " + updater.getChanges().split("\n").length + " (see /kawe cl)");
             } else {
                 actor.printDebug(" - UPDATES: Latest Version");
             }
@@ -110,7 +110,7 @@ public class WorldEditCommands {
         we.getServer().reload();
         we.getEventBus().post(new ConfigurationLoadEvent(we.getPlatformManager().queryCapability(Capability.CONFIGURATION).getConfiguration()));
         Fawe.get().setupConfigs();
-        actor.print(BBC.getPrefix() + "Reloaded WorldEdit " + we.getVersion() + " and FAWE (" + Fawe.get().getVersion() + ")");
+        actor.print(BBC.getPrefix() + "Reloaded WorldEdit " + we.getVersion() + " and KAWE (" + Fawe.get().getVersion() + ")");
     }
 
     @Command(
@@ -135,7 +135,7 @@ public class WorldEditCommands {
     @Command(
             aliases = {"changelog", "cl"},
             usage = "",
-            desc = "View the FAWE changelog",
+            desc = "View the KAWE changelog",
             min = 0,
             max = 0
     )
@@ -240,7 +240,7 @@ public class WorldEditCommands {
     @Command(
             aliases = {"help"},
             usage = "[<command>]",
-            desc = "Displays help for FAWE commands",
+            desc = "Displays help for KAWE commands",
             min = 0,
             max = -1
     )
