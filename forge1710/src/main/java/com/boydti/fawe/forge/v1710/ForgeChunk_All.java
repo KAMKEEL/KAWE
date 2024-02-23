@@ -149,9 +149,10 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
     @Override
     public ForgeChunk_All call() {
         net.minecraft.world.chunk.Chunk nmsChunk = this.getChunk();
-        net.minecraft.world.World nmsWorld = nmsChunk.worldObj;
         nmsChunk.setChunkModified();
+        nmsChunk.hasEntities = true;
         nmsChunk.sendUpdates = true;
+        net.minecraft.world.World nmsWorld = nmsChunk.worldObj;
         try {
             boolean flag = !nmsWorld.provider.hasNoSky;
             // Sections
