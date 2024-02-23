@@ -1,6 +1,6 @@
 #Published by NotMyFault
 info:
-  prefix: '&8(&4&lFAWE&8)&r&7'
+  prefix: '&8(&4&lKAWE&8)&r&7'
   file_deleted: '%s0 Is verwijderd.'
   schematic_pasting: '&7Het schematic wordt geplaatst. dit kan niet veranderd worden.'
   lighting_propogate_selection: '&7Het licht heeft zich verspreid in %s0 chunks. (Note:
@@ -9,7 +9,7 @@ info:
   (het kan even duren voordat de packets worden verstuurd)'
   set_region: '&7Toegestaande regio geselecteerd'
   worldedit_command_limit: '&7U kunt weer verder gaan wanneer uw vorige actie voltooid is'
-  worldedit_delayed: '&7U kunt weer verder gaan wanneer wij uw FAWE action voltooien...'
+  worldedit_delayed: '&7U kunt weer verder gaan wanneer wij uw KAWE action voltooien...'
   worldedit_run: '&7Sorry voor het ongemak.  huidige uitvoerende actie: %s'
   worldedit_complete: '&7Verandering voldaan.'
   require_selection_in_mask: '&7%s Van je selectie is niet binnen je mask.
@@ -20,11 +20,11 @@ info:
   wat toegestaan is, is %max%.'
   worldedit_unsafe: '&7Toegang tot deze command is geblokkeerd'
   worldedit_dangerous_worldedit: '&cNnveilige edits zijn verwerkt op %s0 by %s1'
-  worldedit_toggle_tips_on: '&7Disabled FAWE tips.'
-  worldedit_toggle_tips_off: '&7De FAWE tips staan nu aan.'
-  worldedit_bypassed: '&7De restrictie of FAWE wordt nu overscheiden.'
-  worldedit_unmasked: '&6Je FAWE edits hebben nu geen restrictie meer.'
-  worldedit_restricted: '&6Je FAWE edits hebben nu een restrictie.'
+  worldedit_toggle_tips_on: '&7Disabled KAWE tips.'
+  worldedit_toggle_tips_off: '&7De KAWE tips staan nu aan.'
+  worldedit_bypassed: '&7De restrictie of KAWE wordt nu overscheiden.'
+  worldedit_unmasked: '&6Je KAWE edits hebben nu geen restrictie meer.'
+  worldedit_restricted: '&6Je KAWE edits hebben nu een restrictie.'
   worldedit_oom_admin: |-
     &cMogelijke opties:
     &8 - &7//fast
@@ -335,4 +335,4 @@ tips:
   tip_regen_1: 'Tip: Gebruik een seed met /regen [biome] [seed]'
   tip_biome_pattern: 'Tip: Dee &c#biome[forest]&7 pattern kan ik elke opdracht gebruikt worden'
   tip_biome_mask: 'Tip: Er wordt een restrictie geplaatst op de biome met `$jungle` mask'
-  tip_discord: 'Heb je hulp nodig bij FAWE? https://discord.gg/ngZCzbU'
+  tip_discord: 'Heb je hulp nodig bij KAWE? https://discord.gg/ngZCzbU'

@@ -28,14 +28,14 @@ public enum BBC {
      * Things to note about this class:
      * Can use multiple arguments %s, %s1, %s2, %s3 etc
      */
-    PREFIX("&8(&4&lFAWE&8)&r&7", "Info"),
+    PREFIX("&8(&4&lKAWE&8)&r&7", "Info"),
     FILE_DELETED("%s0 has been deleted.", "Info"),
     SCHEMATIC_PASTING("&7The schematic is pasting. This cannot be undone.", "Info"),
     LIGHTING_PROPOGATE_SELECTION("&7Lighting has been propogated in %s0 chunks. (Note: To remove light use //removelight)", "Info"),
     UPDATED_LIGHTING_SELECTION("&7Lighting has been updated in %s0 chunks. (It may take a second for the packets to send)", "Info"),
     SET_REGION("&7Selection set to your current allowed region", "Info"),
     WORLDEDIT_COMMAND_LIMIT("&7Please wait until your current action completes", "Info"),
-    WORLDEDIT_DELAYED("&7Please wait while we process your FAWE action...", "Info"),
+    WORLDEDIT_DELAYED("&7Please wait while we process your KAWE action...", "Info"),
     WORLDEDIT_RUN("&7Apologies for the delay. Now executing: %s", "Info"),
     WORLDEDIT_COMPLETE("&7Edit completed.", "Info"),
     REQUIRE_SELECTION_IN_MASK("&7%s of your selection is not within your mask. You can only make edits within allowed regions.", "Info"),
@@ -44,13 +44,13 @@ public enum BBC {
     WORLDEDIT_UNSAFE("&7Access to that command has been blocked", "Info"),
     WORLDEDIT_DANGEROUS_WORLDEDIT("&cProcessed unsafe edit at %s0 by %s1", "Info"),
     WORLDEDIT_EXTEND("&cYour edit may have extended outside your allowed region.", "Error"),
-    WORLDEDIT_TOGGLE_TIPS_ON("&7Disabled FAWE tips.", "Info"),
-    WORLDEDIT_TOGGLE_TIPS_OFF("&7Enabled FAWE tips.", "Info"),
+    WORLDEDIT_TOGGLE_TIPS_ON("&7Disabled KAWE tips.", "Info"),
+    WORLDEDIT_TOGGLE_TIPS_OFF("&7Enabled KAWE tips.", "Info"),
 
-    WORLDEDIT_BYPASSED("&7Currently bypassing FAWE restriction.", "Info"),
-    WORLDEDIT_UNMASKED("&6Your FAWE edits are now unrestricted.", "Info"),
+    WORLDEDIT_BYPASSED("&7Currently bypassing KAWE restriction.", "Info"),
+    WORLDEDIT_UNMASKED("&6Your KAWE edits are now unrestricted.", "Info"),
 
-    WORLDEDIT_RESTRICTED("&6Your FAWE edits are now restricted.", "Info"),
+    WORLDEDIT_RESTRICTED("&6Your KAWE edits are now restricted.", "Info"),
     WORLDEDIT_OOM_ADMIN("&cPossible options:\n&8 - &7//fast\n&8 - &7Do smaller edits\n&8 - &7Allocate more memory\n&8 - &7Disable `max-memory-percent`", "Info"),
     COMPRESSED("History compressed. Saved ~ %s0b (%s1x smaller)", "Info"),
 
@@ -525,7 +525,7 @@ public enum BBC {
             return;
         }
         if (actor == null) {
-            Fawe.debug(this.format(args));
+            `Fawe`.debug(this.format(args));
         } else {
             try {
                 Method method = actor.getClass().getMethod("print", String.class);

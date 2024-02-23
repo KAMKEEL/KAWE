@@ -182,14 +182,7 @@ public class FaweForge implements IFawe {
     }
 
     @Override
-    public void startMetrics() {
-        try {
-            ForgeMetrics metrics = new ForgeMetrics("FastAsyncWorldEdit", "3.5.1");
-            metrics.start();
-        } catch (Throwable e) {
-            debug("[FAWE] &cFailed to load up metrics.");
-        }
-    }
+    public void startMetrics(){}
 
     @Override
     public String getPlatform() {

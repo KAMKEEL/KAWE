@@ -1,6 +1,6 @@
 #Updated by NotMyFault and enterih
 info:
-  prefix: '&8(&4&lFAWE&8)&r&7'
+  prefix: '&8(&4&lKAWE&8)&r&7'
   schematic_pasting: '&7Die Schematic wird eingefügt. Dies kann nicht rückgängig gemacht
     werden.'
   updated_lighting_selection: '&7Das Licht wird in %s0 Chunks aktualisiert. (Es kann
@@ -20,7 +20,7 @@ info:
   worldedit_iterations: '&7Du kannst %current% nicht wiederholen. Die maximale
     Anzahl an erlaubten Wiederholungen ist %max%.'
   worldedit_unsafe: '&7Der Zugang zu diesem Befehl wurde verboten.'
-  worldedit_dangerous_worldedit: '&cFAWE führt unsicher WorldEdit Aktionen aus! Position:
+  worldedit_dangerous_worldedit: '&cKAWE führt unsicher WorldEdit Aktionen aus! Position:
     %s0 Spielername: %s1'
   worldedit_bypassed: '&7Beschränkungen werden nun ignoriert.'
   worldedit_unmasked: '&6Deine WorldEdit Beschränkungen sind nun aufgehoben.'
@@ -49,7 +49,7 @@ error:
   not_player: '&cDieser Befehl kann nur von Spielern ausgeführt werden!'
   player_not_found: '&cSpieler nicht gefunden:&7 %s0'
   oom: |-
-    &8[&cKritisch&8] &cWenig Arbeitsspeicher frei (< 1%). FAWE wird folgendes machen:
+    &8[&cKritisch&8] &cWenig Arbeitsspeicher frei (< 1%). KAWE wird folgendes machen:
     &8 - &7Alle Aktionen terminieren
     &8 - &7Vergangene Bearbeitungen vergessen
     &8 - &7Alle unwichtigen Chunks entladen
@@ -150,7 +150,7 @@ worldedit:
     brush_transform: Brush-Transformation gesetzt
     brush_material: Brush-Material gesetzt
     brush_try_other: |-
-      &cFAWE verfügt über andere, passendere Brushes. z.B.:
+      &cKAWE verfügt über andere, passendere Brushes. z.B.:
       &8 - &7//br height [radius=5] [#clipboard|file=null] [rotation=0] [yscale=1.00]
     brush_none: Du hältst kein Tool in der Hand, das man als Brush verwenden kann!
     brush_source_mask_disabled: Brush Quell-Maske deaktiviert
@@ -346,7 +346,7 @@ tips:
   tip_biome_pattern: 'Tipp: Das &c#biome[forest]&7 Muster kann in jedem Befehl genutzt
     werden'
   tip_biome_mask: 'Tipp: Beschränke ein Biom mit der `$jungle` Maske'
-  tip_discord: Du benötigst Hilfe mit FAWE? https://discord.gg/ngZCzbU
+  tip_discord: Du benötigst Hilfe mit KAWE? https://discord.gg/ngZCzbU
   tip_replace_regex: '&7Tipp: Ersetze mit regex:&c //replace .*_log <pattern>'
   tip_replace_regex_2: '&7Tipp: Ersetze mit regex:&c //replace .*stairs[facing=(north|south)]
     <pattern>'

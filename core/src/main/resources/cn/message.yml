@@ -4,17 +4,17 @@
 # 佛壁灯于 2018年12月10日 21:24:35 (UTC+8) 大幅改进翻译质量
 
 # Green_Chennai在2018年12月11日 10:31:43第8次更新时修改由佛壁灯改进翻译后的不协调
-# 请勿将 'FAWE' 进行翻译
+# 请勿将 'KAWE' 进行翻译
 
 info:
-  prefix: '&8(&4&lFAWE&8)&r&7'
+  prefix: '&8(&4&lKAWE&8)&r&7'
   file_deleted: '%s0 已被删除.'
   schematic_pasting: '&7正在粘贴布局.此操作无法撤销.'
   lighting_propogate_selection: '&7光照已在 %s0 个区块内传播.（注：你可使用 //removelight 移除）'
   updated_lighting_selection: '&7已更新 %s0 个区块内的光照.（数据包可能要稍后发出）'
   set_region: '&7选择区域已设置为你当前允许的区域'
   worldedit_command_limit: '&7请等待完成你的当前操作'
-  worldedit_delayed: '&7正在处理你的FAWE操作，请稍后···'
+  worldedit_delayed: '&7正在处理你的KAWE操作，请稍后···'
   worldedit_run: '&7抱歉造成延误，现正执行 %s'
   worldedit_complete: '&7编辑完成.'
   require_selection_in_mask: '&7你选中的 %s 不在蒙版内.你只能在允许的区域内编辑.'
@@ -34,13 +34,13 @@ info:
   worldedit_iterations: '&7您不能重复 %current% 次。所允许的最多重复为 %max% 次。'
   worldedit_unsafe: '&7已阻止对此命令的访问'
   worldedit_dangerous_worldedit: '&c%s1 在 %s0 处进行了不安全的编辑'
-  worldedit_toggle_tips_on: '&7已禁用FAWE提示.'
-  worldedit_toggle_tips_off: '&7已启用FAWE提示.'
+  worldedit_toggle_tips_on: '&7已禁用KAWE提示.'
+  worldedit_toggle_tips_off: '&7已启用KAWE提示.'
   
-  worldedit_bypassed: '&7正绕过FAWE限制.'
-  worldedit_unmasked: '&6你的FAWE编辑现已不受限制.'
+  worldedit_bypassed: '&7正绕过KAWE限制.'
+  worldedit_unmasked: '&6你的KAWE编辑现已不受限制.'
 
-  worldedit_restricted: '&6你的FAWE编辑现正受限制.'
+  worldedit_restricted: '&6你的KAWE编辑现正受限制.'
   worldedit_oom_admin: |-
     &c可选项:
     &8 - &7//fast

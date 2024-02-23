@@ -1,12 +1,12 @@
 info:
-  prefix: '&8(&4&lFAWE&8)&r&7'
+  prefix: '&8(&4&lKAWE&8)&r&7'
   file_deleted: '%s0 è stato eliminato.'
   schematic_pasting: '&7La schematica si sta incollando. Questo non può essere annullato.'
   lighting_propogate_selection: '&7L''illuminazione è stata propagata in %s0 chunk. (Nota: Per rimuovere la luce usa //removelight)'
   updated_lighting_selection: '&7L''illuminazione è stata aggiornata in %s0 chunk. (Può richiedere un secondo per i pacchetti da inviare)'
   set_region: '&7Selezione impostata alla tua regione attuale consentita'
   worldedit_command_limit: '&7Attendi fino al completamento della tua azione corrente'
-  worldedit_delayed: '&7Attendi durante l''elaborazione della tua azione di FAWE...'
+  worldedit_delayed: '&7Attendi durante l''elaborazione della tua azione di KAWE...'
   worldedit_run: '&7Scuse per il ritardo. Ora in esecuzione: %s'
   worldedit_complete: '&7Modifica completata.'
   require_selection_in_mask: '&7%s della tua selezione non è nella tua maschera. Puoi solo fare modifiche all''interno delle regioni consentite.'
@@ -15,11 +15,11 @@ info:
   worldedit_unsafe: '&7L''accesso a quel comando è stato bloccato'
   worldedit_dangerous_worldedit: '&cModifica non sicura elaborata a %s0 da %s1'
   worldedit_bypass: '&7&oPer bypassare le tue restrizioni usa &c/wea'
-  worldedit_toggle_tips_on: '&7Suggerimenti di FAWE disabilitati.'
-  worldedit_toggle_tips_off: '&7Suggerimenti di FAWE abilitati.'
-  worldedit_bypassed: '&7Attualmente bypassando la restrizione di FAWE.'
-  worldedit_unmasked: '&6Le tue modifiche di FAWE non sono più soggette a restrizioni.'
-  worldedit_restricted: '&6Le tue modifiche di FAWE sono ora soggette a restrizioni.'
+  worldedit_toggle_tips_on: '&7Suggerimenti di KAWE disabilitati.'
+  worldedit_toggle_tips_off: '&7Suggerimenti di KAWE abilitati.'
+  worldedit_bypassed: '&7Attualmente bypassando la restrizione di KAWE.'
+  worldedit_unmasked: '&6Le tue modifiche di KAWE non sono più soggette a restrizioni.'
+  worldedit_restricted: '&6Le tue modifiche di KAWE sono ora soggette a restrizioni.'
   worldedit_oom_admin: |-
     &cOpzioni possibili:
     &8 - &7//fast

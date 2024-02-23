@@ -6,7 +6,7 @@
   updated_lÄ±ghtÄ±ng_selectÄ±on: "&eAydÄ±nlatma &c%s0 &eChunk Olarak GÃ¼ncellendi. &7(&aPaketlerin GÃ¶nderilmesi Zaman Alabilir&7)"
   set_regÄ±on: "&eSeÃ§im, Ä°zin Verilen BÃ¶lgenize AyarlandÄ±"
   worldedÄ±t_command_limit: "&7LÃ¼tfen Mevcut Ä°ÅŸleminiz TamamlanÄ±ncaya Kadar Bekleyin"
-  worldedÄ±t_delayed: "&eFAWE Ä°ÅŸleminizi GerÃ§ekleÅŸtirirken LÃ¼tfen Bekleyin..."
+  worldedÄ±t_delayed: "&eKAWE Ä°ÅŸleminizi GerÃ§ekleÅŸtirirken LÃ¼tfen Bekleyin..."
   worldedÄ±t_run: "&eÅžuan YÃ¼rÃ¼tÃ¼lÃ¼yor: &c%s"
   worldedÄ±t_complete: "&aDÃ¼zenleme TamamlandÄ±."
   requÄ±re_selectÄ±on_Ä±n_mask: "&eSeÃ§iminizden &c%s &eTanesi Maskenizin Ä°Ã§inde DeÄŸil. YalnÄ±zca Ä°zin Verilen BÃ¶lgelerde DÃ¼zenlemeler Yapabilirsiniz."
@@ -14,11 +14,11 @@
   worldedÄ±t_Ä±teratÄ±ons: "&c%current% &eKere Tekrar Edemezsin. Maksimum &c%max% &eDefa Tekrar Edebilirsin."
   worldedÄ±t_unsafe: "&cBu Komuta EriÅŸim Engellendi"
   worldedÄ±t_dangerous_worldedÄ±t: "&cÄ°ÅŸlenmiÅŸ GÃ¼vensiz DÃ¼zenleme: &2%s0 &c%s1 &eTarafÄ±ndan"
-  worldedÄ±t_toggle_tÄ±ps_on: "&eFAWE Ä°puÃ§larÄ± Devre DÄ±ÅŸÄ± BÄ±rakÄ±ldÄ±."
-  worldedÄ±t_toggle_tÄ±ps_off: "&eFAWE Ä°puÃ§larÄ± Aktif Edildi."
-  worldedÄ±t_bypassed: "&eÅžuanda FAWE KÄ±sÄ±tlamasÄ±nÄ± AtlÄ±yor."
-  worldedÄ±t_unmasked: "&cFAWE DÃ¼zenlemeleriniz ArtÄ±k SÄ±nÄ±rsÄ±z."
-  worldedÄ±t_restrÄ±cted: "&cFAWE DÃ¼zenlemeleriniz ArtÄ±k SÄ±nÄ±rlandÄ±rÄ±ldÄ±."
+  worldedÄ±t_toggle_tÄ±ps_on: "&eKAWE Ä°puÃ§larÄ± Devre DÄ±ÅŸÄ± BÄ±rakÄ±ldÄ±."
+  worldedÄ±t_toggle_tÄ±ps_off: "&eKAWE Ä°puÃ§larÄ± Aktif Edildi."
+  worldedÄ±t_bypassed: "&eÅžuanda KAWE KÄ±sÄ±tlamasÄ±nÄ± AtlÄ±yor."
+  worldedÄ±t_unmasked: "&cKAWE DÃ¼zenlemeleriniz ArtÄ±k SÄ±nÄ±rsÄ±z."
+  worldedÄ±t_restrÄ±cted: "&cKAWE DÃ¼zenlemeleriniz ArtÄ±k SÄ±nÄ±rlandÄ±rÄ±ldÄ±."
   worldedÄ±t_oom_admÄ±n: |-
     &cMÃ¼mkÃ¼n Ayarlar:
     &8 - &7//fast
