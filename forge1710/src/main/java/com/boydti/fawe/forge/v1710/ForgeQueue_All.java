@@ -62,15 +62,6 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
     protected static Method methodToNative;
     protected static ExtendedBlockStorage emptySection;
 
-    public ForgeQueue_All(com.sk89q.worldedit.world.World world) {
-        super(world);
-        getImpWorld();
-    }
-
-    public ForgeQueue_All(String world) {
-        super(world);
-        getImpWorld();
-    }
 
     static {
         try {
@@ -83,6 +74,17 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public ForgeQueue_All(com.sk89q.worldedit.world.World world) {
+        super(world);
+        getImpWorld();
+    }
+
+    public ForgeQueue_All(String world) {
+        super(world);
+        getImpWorld();
     }
 
     @Override
@@ -367,7 +369,7 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
             }
             if (size.intValue() == 0) return;
             S22PacketMultiBlockChange packet = new S22PacketMultiBlockChange();
-            ByteBuf byteBuf = new UnpooledByteBufAllocator(true).buffer();
+            ByteBuf byteBuf = UnpooledByteBufAllocator.DEFAULT.buffer();
             final PacketBuffer buffer = new PacketBuffer(byteBuf);
             buffer.writeInt(chunk.getX());
             buffer.writeInt(chunk.getZ());
