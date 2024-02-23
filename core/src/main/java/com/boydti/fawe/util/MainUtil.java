@@ -548,7 +548,7 @@ public class MainUtil {
         try {
             return getJarFile(Fawe.class);
         } catch (MalformedURLException | URISyntaxException | SecurityException e) {
-            return new File(Fawe.imp().getDirectory().getParentFile(), "FastAsyncWorldEdit.jar");
+            return new File(Fawe.imp().getDirectory().getParentFile(), "KamAsyncWorldEdit.jar");
         }
     }
 

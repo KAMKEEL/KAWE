@@ -65,7 +65,7 @@ public class BStats implements Closeable {
     private static final ConcurrentLinkedQueue<Object> knownMetricsInstances = new ConcurrentLinkedQueue<>();
 
     public BStats() {
-        this("FastAsyncWorldEdit", Fawe.get().getVersion().toString(), Fawe.imp().getPlatformVersion(), Fawe.imp().getPlatform(), Fawe.imp().isOnlineMode());
+        this("KamAsyncWorldEdit", Fawe.get().getVersion().toString(), Fawe.imp().getPlatformVersion(), Fawe.imp().getPlatform(), Fawe.imp().isOnlineMode());
     }
 
     public int getPlayerCount() {

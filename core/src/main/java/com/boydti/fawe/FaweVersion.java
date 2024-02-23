@@ -23,7 +23,7 @@ public class FaweVersion {
 
     @Override
     public String toString() {
-        return "FastAsyncWorldEdit-" + year + "." + month + "." + day + "-" + Integer.toHexString(hash) + "-" + build;
+        return "KamAsyncWorldEdit-" + year + "." + month + "." + day + "-" + Integer.toHexString(hash) + "-" + build;
     }
 
     public boolean isNewer(FaweVersion other) {
