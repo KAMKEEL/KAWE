@@ -525,7 +525,7 @@ public enum BBC {
             return;
         }
         if (actor == null) {
-            `Fawe`.debug(this.format(args));
+            Fawe.debug(this.format(args));
         } else {
             try {
                 Method method = actor.getClass().getMethod("print", String.class);
