@@ -11,6 +11,7 @@ import com.boydti.fawe.regions.FaweMaskManager;
 import com.boydti.fawe.util.MainUtil;
 import com.boydti.fawe.util.TaskManager;
 import com.boydti.fawe.wrappers.WorldWrapper;
+import com.mojang.authlib.GameProfile;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.forge.ForgeWorld;
 import com.sk89q.worldedit.internal.LocalWorldAdapter;
@@ -107,6 +108,8 @@ public class FaweForge implements IFawe {
         if (obj instanceof String) {
             MinecraftServer server = MinecraftServer.getServer();
             player = server.getConfigurationManager().func_152612_a((String) obj);
+        } else if (obj instanceof UUID) {
+            player = getPlayerByUUID((UUID) obj);
         } else if (obj instanceof EntityPlayerMP) {
             player = (EntityPlayerMP) obj;
         }
@@ -127,6 +130,7 @@ public class FaweForge implements IFawe {
         return new ForgeTaskMan(512);
     }
 
+
     @Override
     public String getWorldName(World world) {
         if (world instanceof WorldWrapper) {
@@ -134,26 +138,37 @@ public class FaweForge implements IFawe {
         }
         else if (world instanceof EditSession) {
             return getWorldName(((EditSession) world).getWorld());
-        } else if (world.getClass().getName().equals("com.sk89q.worldedit.bukkit.BukkitWorld")) {
-            try {
-                Class<?> classBukkitWorld = world.getClass();
-                Method methodGetWorld = classBukkitWorld.getDeclaredMethod("getWorld");
-                methodGetWorld.setAccessible(true);
-                Object craftWorld = methodGetWorld.invoke(world);
-                Class<? extends Object> classCraftWorld = craftWorld.getClass();
-                Method methodGetHandle = classCraftWorld.getDeclaredMethod("getHandle");
-                methodGetHandle.setAccessible(true);
-                Object nmsWorld = methodGetHandle.invoke(craftWorld);
-                return getWorldName((net.minecraft.world.World) nmsWorld);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                return world.getName();
-            }
-        }else if (world instanceof LocalWorldAdapter){
-            return world.getName();
         }
         return getWorldName(((ForgeWorld) world).getWorld());
     }
+
+//    @Override
+//    public String getWorldName(World world) {
+//        if (world instanceof WorldWrapper) {
+//            return getWorldName(((WorldWrapper) world).getParent());
+//        }
+//        else if (world instanceof EditSession) {
+//            return getWorldName(((EditSession) world).getWorld());
+//        } else if (world.getClass().getName().equals("com.sk89q.worldedit.bukkit.BukkitWorld")) {
+//            try {
+//                Class<?> classBukkitWorld = world.getClass();
+//                Method methodGetWorld = classBukkitWorld.getDeclaredMethod("getWorld");
+//                methodGetWorld.setAccessible(true);
+//                Object craftWorld = methodGetWorld.invoke(world);
+//                Class<? extends Object> classCraftWorld = craftWorld.getClass();
+//                Method methodGetHandle = classCraftWorld.getDeclaredMethod("getHandle");
+//                methodGetHandle.setAccessible(true);
+//                Object nmsWorld = methodGetHandle.invoke(craftWorld);
+//                return getWorldName((net.minecraft.world.World) nmsWorld);
+//            } catch (Throwable e) {
+//                e.printStackTrace();
+//                return world.getName();
+//            }
+//        }else if (world instanceof LocalWorldAdapter){
+//            return world.getName();
+//        }
+//        return getWorldName(((ForgeWorld) world).getWorld());
+//    }
 
     public String getWorldName(net.minecraft.world.World w) {
         Integer[] ids = DimensionManager.getIDs();
@@ -200,7 +215,26 @@ public class FaweForge implements IFawe {
 
     @Override
     public String getName(UUID uuid) {
-        return uuid.toString();
+        try {
+            EntityPlayerMP playerMP = getPlayerByUUID(uuid);
+            if(playerMP == null)
+                return null;
+            return playerMP.getCommandSenderName();
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    public EntityPlayerMP getPlayerByUUID(UUID uuid) {
+        for (Object playerObj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+            if (playerObj instanceof EntityPlayerMP) {
+                EntityPlayerMP player = (EntityPlayerMP) playerObj;
+                if (player.getUniqueID().equals(uuid)) {
+                    return player;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
