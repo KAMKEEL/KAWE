@@ -20,7 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "com.boydti.fawe", name = "FastAsyncWorldEdit", version = "3.5.1", acceptableRemoteVersions = "*", dependencies = "before:worldedit")
+@Mod(modid = "kawe", name = "KamAsyncWorldEdit", version = "1.0", acceptableRemoteVersions = "*", dependencies = "before:worldedit")
 public class ForgeMain {
     private static FaweForge IMP;
     private Logger logger;
