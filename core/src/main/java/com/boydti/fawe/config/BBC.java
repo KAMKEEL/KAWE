@@ -28,7 +28,7 @@ public enum BBC {
      * Things to note about this class:
      * Can use multiple arguments %s, %s1, %s2, %s3 etc
      */
-    PREFIX("&8(&4&lKAWE&8)&r&7", "Info"),
+    PREFIX("&f&l[&c&lKAWE&f&l]&r&7", "Info"),
     FILE_DELETED("%s0 has been deleted.", "Info"),
     SCHEMATIC_PASTING("&7The schematic is pasting. This cannot be undone.", "Info"),
     LIGHTING_PROPOGATE_SELECTION("&7Lighting has been propogated in %s0 chunks. (Note: To remove light use //removelight)", "Info"),

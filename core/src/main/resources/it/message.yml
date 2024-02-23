@@ -1,5 +1,5 @@
 info:
-  prefix: '&8(&4&lKAWE&8)&r&7'
+  prefix: '&f&l[&c&lKAWE&f&l]&r&7'
   file_deleted: '%s0 è stato eliminato.'
   schematic_pasting: '&7La schematica si sta incollando. Questo non può essere annullato.'
   lighting_propogate_selection: '&7L''illuminazione è stata propagata in %s0 chunk. (Nota: Per rimuovere la luce usa //removelight)'
