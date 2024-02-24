@@ -379,7 +379,8 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 public void run(int localX, int y, int localZ, int combined) {
                     short index = (short) (localX << 12 | localZ << 8 | y);
                     buffer.writeShort(index);
-                    buffer.writeVarIntToBuffer(combined);
+                    int blockId = combined & 0xFFF; // Mask out metadata bits to prevent crash
+                    buffer.writeVarIntToBuffer(blockId);
                 }
             });
             packet.readPacketData(buffer);
