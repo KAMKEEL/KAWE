@@ -103,56 +103,38 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
             vs = this.byteIds[i] = new byte[4096];
         }
         this.count[i]++;
-        switch (id) {
-            case 0:
-//                this.air[i]++;
-//                vs[j] = 0;
-//                vs2[j] = (char) 1;
-//
-//                datas[i] = null;
-//                extended[i] = null;
-//                //System.out.println(String.format("(%d, %d, %d) %d >> 8 - %d", x, y, z, id, id >> 8));
-//                return;
-            case 11:
-            case 39:
-            case 40:
-            case 51:
-            case 74:
-            case 89:
-            case 122:
-            case 124:
-            case 138:
-            case 169:
-            case 213:
-            case 130:
-            case 76:
-            case 62:
-            case 50:
-            case 10:
-//                this.relight[i]++;
-            default:
-                vs2[j] = (char) ((id << 4) + data);
-                vs[j] = (byte) id;
-                if(id == 0){
-                    this.air[i]++;
-                    vs[j] = 0;
-                    vs2[j] = (char) 16;
-                }
-                if (data != 0) {
-                    NibbleArray dataArray = datas[i];
-                    if (dataArray == null) {
-                        datas[i] = dataArray = new NibbleArray(4096, 4);
-                    }
-                    dataArray.set(x, y & 15, z, data);
-                }
-                if (id > 255) {
-                    NibbleArray nibble = extended[i];
-                    if (nibble == null) {
-                        extended[i] = nibble = new NibbleArray(4096, 4);
-                    }
-                    nibble.set(x, y & 15, z, id >> 8);
-                }
+
+        if(id == 0){
+            this.air[i]++;
+
+            /**
+             * @TODO REQUIRES MORE TESTING
+             *      for some reason the extended ID breaks when its 1 or 0????
+             *      (0 supposed to indicate no change to the block and 1 supposed to indicate a change???)
+             *      (Either way anything below 16 after bitshift magic will result in 0 as the ID)
+             */
+            vs2[j] = (char) 2;
+            vs[j] = 0;
+        }else{
+            vs2[j] = (char) ((id << 4) + data);
+            vs[j] = (byte) id;
         }
+
+        if (data != 0) {
+            NibbleArray dataArray = datas[i];
+            if (dataArray == null) {
+                datas[i] = dataArray = new NibbleArray(4096, 4);
+            }
+            dataArray.set(x, y & 15, z, data);
+        }
+        if (id > 255) {
+            NibbleArray nibble = extended[i];
+            if (nibble == null) {
+                extended[i] = nibble = new NibbleArray(4096, 4);
+            }
+            nibble.set(x, y & 15, z, id >> 8);
+        }
+
     }
 
     @Override
