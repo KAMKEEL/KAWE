@@ -2,7 +2,9 @@ package com.boydti.fawe.forge;
 
 import com.boydti.fawe.Fawe;
 import com.boydti.fawe.config.Settings;
+import com.boydti.fawe.forge.v1710.ForgeChunkUpdater;
 import com.boydti.fawe.object.FawePlayer;
+import com.sk89q.worldedit.extension.platform.CommandManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -32,6 +34,9 @@ public class ForgeMain {
         MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
         this.IMP = new FaweForge(this, event.getModLog(), event.getModMetadata(), directory);
+
+        CommandManager.setChunkUpdater(new ForgeChunkUpdater());
+
         try {
             Class.forName("org.spongepowered.api.Sponge");
             Settings.IMP.QUEUE.PARALLEL_THREADS = 1;

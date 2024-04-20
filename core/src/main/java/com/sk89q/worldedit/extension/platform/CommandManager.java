@@ -26,7 +26,9 @@ import com.boydti.fawe.command.MaskBinding;
 import com.boydti.fawe.command.PatternBinding;
 import com.boydti.fawe.config.BBC;
 import com.boydti.fawe.config.Settings;
+import com.boydti.fawe.object.FaweChunk;
 import com.boydti.fawe.object.FawePlayer;
+import com.boydti.fawe.object.FaweQueue;
 import com.boydti.fawe.object.exception.FaweException;
 import com.boydti.fawe.object.task.ThrowableSupplier;
 import com.boydti.fawe.util.StringMan;
@@ -61,14 +63,12 @@ import com.sk89q.worldedit.util.command.parametric.*;
 import com.sk89q.worldedit.util.eventbus.Subscribe;
 import com.sk89q.worldedit.util.logging.DynamicStreamHandler;
 import com.sk89q.worldedit.util.logging.LogFormat;
+import com.sk89q.worldedit.world.AbstractChunkUpdater;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -110,6 +110,16 @@ public final class CommandManager {
     private Map<CommandCallable, String[][]> commandMap;
 
     private static CommandManager INSTANCE;
+
+    private static AbstractChunkUpdater CHUNK_UPDATER;
+
+    /**
+     * Registers a chunk updater to avoid ghost blocks
+     * @param updater
+     */
+    public static void setChunkUpdater(AbstractChunkUpdater updater){
+        CHUNK_UPDATER = updater;
+    }
 
     /**
      * Create a new instance.
@@ -503,6 +513,10 @@ public final class CommandManager {
         } finally {
             final EditSession editSession = locals.get(EditSession.class);
             if (editSession != null) {
+                Collection<FaweChunk> faweChunks = editSession.getQueue().getFaweChunks();
+
+                FaweQueue faweQueue = editSession.getQueue();
+
                 editSession.flushQueue();
                 worldEdit.flushBlockBag(locals.get(Actor.class), editSession);
                 session.remember(editSession);
@@ -510,6 +524,8 @@ public final class CommandManager {
                 if (time > 1000) {
                     BBC.ACTION_COMPLETE.send(actor, (time / 1000d));
                 }
+                if(CHUNK_UPDATER != null)
+                    CHUNK_UPDATER.updateChunks(editSession.getWorld(), faweQueue, faweChunks);
                 Request.reset();
             }
         }
