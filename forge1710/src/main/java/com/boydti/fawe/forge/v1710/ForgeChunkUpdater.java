@@ -28,7 +28,7 @@ public class ForgeChunkUpdater extends AbstractChunkUpdater {
                 for(FaweChunk c : chunks){
                     Chunk chunk = (Chunk) c.getChunk();
                     EntityPlayerMP player = (EntityPlayerMP) p;
-                    player.playerNetServerHandler.sendPacket(new S21PacketChunkData(chunk, true, c.getBitMask()));
+                    player.playerNetServerHandler.sendPacket(new S21PacketChunkData(chunk, true, 65535));
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException e) {
