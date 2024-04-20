@@ -105,10 +105,14 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
         this.count[i]++;
         switch (id) {
             case 0:
-                this.air[i]++;
-                vs[j] = 0;
-                vs2[j] = (char) 1;
-                return;
+//                this.air[i]++;
+//                vs[j] = 0;
+//                vs2[j] = (char) 1;
+//
+//                datas[i] = null;
+//                extended[i] = null;
+//                //System.out.println(String.format("(%d, %d, %d) %d >> 8 - %d", x, y, z, id, id >> 8));
+//                return;
             case 11:
             case 39:
             case 40:
@@ -129,6 +133,11 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
             default:
                 vs2[j] = (char) ((id << 4) + data);
                 vs[j] = (byte) id;
+                if(id == 0){
+                    this.air[i]++;
+                    vs[j] = 0;
+                    vs2[j] = (char) 16;
+                }
                 if (data != 0) {
                     NibbleArray dataArray = datas[i];
                     if (dataArray == null) {
