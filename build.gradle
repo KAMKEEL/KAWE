@@ -3,9 +3,10 @@ buildscript {
         mavenCentral()
         maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        gradlePluginPortal()
     }
 	dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
         classpath 'org.ajoberstar:grgit:1.7.0'
     }
     configurations.all {
