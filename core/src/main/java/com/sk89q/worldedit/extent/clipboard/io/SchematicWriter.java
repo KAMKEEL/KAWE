@@ -72,6 +72,7 @@ public class SchematicWriter implements ClipboardWriter {
         public byte[] blocks;
         public byte[] blockData;
         public byte[] addBlocks;
+        public byte[] addBlocksExtra;
         public List<Tag> tileEntities;
 
         public ForEach(int[] yarea, int[] zwidth, byte[] blocks, byte[] blockData, List<Tag> tileEntities) {
@@ -92,14 +93,29 @@ public class SchematicWriter implements ClipboardWriter {
             }
             int id = block.getId();
             blocks[index] = (byte) id;
+            if (id > 255) {
+                int ext = id >> 8;
+                int low = ext & 0xF;
+                int high = (ext >> 4) & 0xF;
+                if (addBlocks == null && low != 0) {
+                    addBlocks = new byte[((blocks.length + 1) >> 1)];
+                }
+                if (addBlocksExtra == null && high != 0) {
+                    addBlocksExtra = new byte[((blocks.length + 1) >> 1)];
+                }
+                if (low != 0) {
+                    addBlocks[index >> 1] = (byte) (((index & 1) == 0)
+                            ? addBlocks[index >> 1] & 0xF0 | low
+                            : addBlocks[index >> 1] & 0xF | (low << 4));
+                }
+                if (high != 0) {
+                    addBlocksExtra[index >> 1] = (byte) (((index & 1) == 0)
+                            ? addBlocksExtra[index >> 1] & 0xF0 | high
+                            : addBlocksExtra[index >> 1] & 0xF | (high << 4));
+                }
+            }
             if (FaweCache.hasData(id)) {
                 blockData[index] = (byte) block.getData();
-                if (id > 255) {
-                    if (addBlocks == null) { // Lazily create section
-                        addBlocks = new byte[((blocks.length + 1) >> 1)];
-                    }
-                    addBlocks[index >> 1] = (byte) (((index & 1) == 0) ? addBlocks[index >> 1] & 0xF0 | (id >> 8) & 0xF : addBlocks[index >> 1] & 0xF | ((id >> 8) & 0xF) << 4);
-                }
             }
             CompoundTag rawTag = block.getNbtData();
             if (rawTag != null) {
@@ -143,6 +159,7 @@ public class SchematicWriter implements ClipboardWriter {
         final DataOutput rawStream = outputStream.getOutputStream();
         outputStream.writeLazyCompoundTag("Schematic", new NBTOutputStream.LazyWrite() {
             private boolean hasAdd = false;
+            private boolean hasAddHigh = false;
             private boolean hasTile = false;
             private boolean hasData = false;
 
@@ -167,12 +184,15 @@ public class SchematicWriter implements ClipboardWriter {
                     FastByteArrayOutputStream ids = new FastByteArrayOutputStream();
                     FastByteArrayOutputStream datas = new FastByteArrayOutputStream();
                     FastByteArrayOutputStream add = new FastByteArrayOutputStream();
+                    FastByteArrayOutputStream addExtra = new FastByteArrayOutputStream();
 
                     OutputStream idsOut = new PGZIPOutputStream(ids);
                     OutputStream dataOut = new PGZIPOutputStream(datas);
                     OutputStream addOut = new PGZIPOutputStream(add);
+                    OutputStream addExtraOut = new PGZIPOutputStream(addExtra);
 
                     byte[] addAcc = new byte[1];
+                    byte[] addAccExtra = new byte[1];
 
                     clipboard.IMP.forEach(new FaweClipboard.BlockReader() {
                         int index;
@@ -194,18 +214,36 @@ public class SchematicWriter implements ClipboardWriter {
                                 }
                                 // Add
                                 if (id > 255) {
-                                    int add = id >> 8;
-                                    if (!hasAdd) {
-                                        hasAdd = true;
-                                        for (int i = 0; i < index >> 1; i++) {
-                                            addOut.write(new byte[index >> 1]);
+                                    int ext = id >> 8;
+                                    int low = ext & 0xF;
+                                    int high = (ext >> 4) & 0xF;
+                                    if (low != 0) {
+                                        if (!hasAdd) {
+                                            hasAdd = true;
+                                            for (int i = 0; i < index >> 1; i++) {
+                                                addOut.write(new byte[index >> 1]);
+                                            }
+                                        }
+                                        if ((index & 1) == 1) {
+                                            addOut.write(addAcc[0] + (low << 4));
+                                            addAcc[0] = 0;
+                                        } else {
+                                            addAcc[0] = (byte) low;
                                         }
                                     }
-                                    if ((index & 1) == 1) {
-                                        addOut.write(addAcc[0] + (add << 4));
-                                        addAcc[0] = 0;
-                                    } else {
-                                        addAcc[0] = (byte) add;
+                                    if (high != 0) {
+                                        if (!hasAddHigh) {
+                                            hasAddHigh = true;
+                                            for (int i = 0; i < index >> 1; i++) {
+                                                addExtraOut.write(new byte[index >> 1]);
+                                            }
+                                        }
+                                        if ((index & 1) == 1) {
+                                            addExtraOut.write(addAccExtra[0] + (high << 4));
+                                            addAccExtra[0] = 0;
+                                        } else {
+                                            addAccExtra[0] = (byte) high;
+                                        }
                                     }
                                 }
                                 // Index
@@ -216,10 +254,12 @@ public class SchematicWriter implements ClipboardWriter {
                         }
                     }, true);
                     if (addAcc[0] != 0) addOut.write(addAcc[0]);
+                    if (addAccExtra[0] != 0) addExtraOut.write(addAccExtra[0]);
 
                     idsOut.close();
                     dataOut.close();
                     addOut.close();
+                    addExtraOut.close();
 
                     out.writeNamedTagName("Blocks", NBTConstants.TYPE_BYTE_ARRAY);
                     out.getOutputStream().writeInt(volume);
@@ -238,6 +278,14 @@ public class SchematicWriter implements ClipboardWriter {
                         int addLength = (volume + 1) >> 1;
                         out.getOutputStream().writeInt(addLength);
                         try (GZIPInputStream in = new GZIPInputStream(new ByteArrayInputStream(add.toByteArray()))) {
+                            ByteStreams.copy(in, (OutputStream) rawStream);
+                        }
+                    }
+                    if (hasAddHigh) {
+                        out.writeNamedTagName("AddBlocksExtra", NBTConstants.TYPE_BYTE_ARRAY);
+                        int addLength = (volume + 1) >> 1;
+                        out.getOutputStream().writeInt(addLength);
+                        try (GZIPInputStream in = new GZIPInputStream(new ByteArrayInputStream(addExtra.toByteArray()))) {
                             ByteStreams.copy(in, (OutputStream) rawStream);
                         }
                     }
@@ -312,6 +360,34 @@ public class SchematicWriter implements ClipboardWriter {
                             }
                         });
                         if (write[0]) {
+                            rawStream.write(lastAdd[0]);
+                        }
+                    }
+                    if (hasAddHigh) {
+                        out.writeNamedTagName("AddBlocksExtra", NBTConstants.TYPE_BYTE_ARRAY);
+                        int addLength = (volume + 1) >> 1;
+                        out.getOutputStream().writeInt(addLength);
+
+                        final int[] lastAdd = new int[1];
+                        final boolean[] writeHigh = new boolean[1];
+
+                        clipboard.IMP.streamIds(new NBTStreamer.ByteReader() {
+                            @Override
+                            public void run(int index, int byteValue) {
+                                int val = byteValue >> 12;
+                                if (writeHigh[0]) {
+                                    try {
+                                        rawStream.write((val << 4) + lastAdd[0]);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    lastAdd[0] = val;
+                                }
+                                writeHigh[0] ^= true;
+                            }
+                        });
+                        if (writeHigh[0]) {
                             rawStream.write(lastAdd[0]);
                         }
                     }
@@ -408,6 +484,7 @@ public class SchematicWriter implements ClipboardWriter {
 
         final byte[] blocks = new byte[width * height * length];
         byte[] addBlocks;
+        byte[] addBlocksExtra;
         final byte[] blockData = new byte[width * height * length];
         final List<Tag> tileEntities = new ArrayList<Tag>();
         // Precalculate index vars
@@ -425,6 +502,7 @@ public class SchematicWriter implements ClipboardWriter {
             ForEach forEach = new ForEach(yarea, zwidth, blocks, blockData, tileEntities);
             faweClip.forEach(forEach, false);
             addBlocks = forEach.addBlocks;
+            addBlocksExtra = forEach.addBlocksExtra;
         } else {
             final int mx = min.getBlockX();
             final int my = min.getBlockY();
@@ -438,6 +516,7 @@ public class SchematicWriter implements ClipboardWriter {
                 forEach.run(x, y, z, clipboard.getBlock(point));
             }
             addBlocks = forEach.addBlocks;
+            addBlocksExtra = forEach.addBlocksExtra;
         }
 
         schematic.put("Blocks", new ByteArrayTag(blocks));
@@ -446,6 +525,9 @@ public class SchematicWriter implements ClipboardWriter {
 
         if (addBlocks != null) {
             schematic.put("AddBlocks", new ByteArrayTag(addBlocks));
+        }
+        if (addBlocksExtra != null) {
+            schematic.put("AddBlocksExtra", new ByteArrayTag(addBlocksExtra));
         }
 
         List<Tag> entities = new ArrayList<Tag>();

@@ -14,11 +14,14 @@ import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.io.IOException;
 import java.util.UUID;
 
 public class SchematicStreamer extends NBTStreamer {
     private final UUID uuid;
+    private final Int2IntMap addMap = new Int2IntOpenHashMap();
 
     public SchematicStreamer(NBTInputStream stream, UUID uuid) {
         super(stream);
@@ -42,6 +45,7 @@ public class SchematicStreamer extends NBTStreamer {
         addReader("Schematic.Blocks.?", initializer);
         addReader("Schematic.Data.?", initializer);
         addReader("Schematic.AddBlocks.?", initializer2);
+        addReader("Schematic.AddBlocksExtra.?", initializer2);
         addReader("Schematic.Blocks.#", new ByteReader() {
             @Override
             public void run(int index, int value) {
@@ -61,8 +65,20 @@ public class SchematicStreamer extends NBTStreamer {
                     int first = value & 0x0F;
                     int second = (value & 0xF0) >> 4;
                     int gIndex = index << 1;
-                    if (first != 0) fc.setAdd(gIndex, first);
-                    if (second != 0) fc.setAdd(gIndex + 1, second);
+                    if (first != 0) addMap.put(gIndex, addMap.getOrDefault(gIndex, 0) | first);
+                    if (second != 0) addMap.put(gIndex + 1, addMap.getOrDefault(gIndex + 1, 0) | second);
+                }
+            }
+        });
+        addReader("Schematic.AddBlocksExtra.#", new ByteReader() {
+            @Override
+            public void run(int index, int value) {
+                if (value != 0) {
+                    int first = value & 0x0F;
+                    int second = (value & 0xF0) >> 4;
+                    int gIndex = index << 1;
+                    if (first != 0) addMap.put(gIndex, addMap.getOrDefault(gIndex, 0) | (first << 4));
+                    if (second != 0) addMap.put(gIndex + 1, addMap.getOrDefault(gIndex + 1, 0) | (second << 4));
                 }
             }
         });
@@ -224,6 +240,14 @@ public class SchematicStreamer extends NBTStreamer {
             addDimensionReaders();
             addBlockReaders();
             readFully();
+            if (!addMap.isEmpty()) {
+                for (Int2IntMap.Entry entry : addMap.int2IntEntrySet()) {
+                    int idx = entry.getIntKey();
+                    int val = entry.getIntValue();
+                    if (val != 0) fc.setAdd(idx, val);
+                }
+                addMap.clear();
+            }
             Vector min = new Vector(originX, originY, originZ);
             Vector offset = new Vector(offsetX, offsetY, offsetZ);
             Vector origin = min.subtract(offset);
