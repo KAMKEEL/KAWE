@@ -14,14 +14,14 @@ import com.sk89q.worldedit.entity.BaseEntity;
 import com.sk89q.worldedit.extent.clipboard.BlockArrayClipboard;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.regions.CuboidRegion;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import java.io.IOException;
 import java.util.UUID;
 
 public class SchematicStreamer extends NBTStreamer {
     private final UUID uuid;
-    private final Int2ObjectMap<Integer> addMap = new Int2ObjectOpenHashMap<>();
+    private final Int2IntMap addMap = new Int2IntOpenHashMap();
 
     public SchematicStreamer(NBTInputStream stream, UUID uuid) {
         super(stream);
@@ -66,13 +66,13 @@ public class SchematicStreamer extends NBTStreamer {
                     int second = (value & 0xF0) >> 4;
                     int gIndex = index << 1;
                     if (first != 0) {
-                        Integer prev = addMap.get(gIndex);
-                        int val = (prev == null ? 0 : prev) | first;
+                        int prev = addMap.get(gIndex);
+                        int val = prev | first;
                         addMap.put(gIndex, val);
                     }
                     if (second != 0) {
-                        Integer prev = addMap.get(gIndex + 1);
-                        int val = (prev == null ? 0 : prev) | second;
+                        int prev = addMap.get(gIndex + 1);
+                        int val = prev | second;
                         addMap.put(gIndex + 1, val);
                     }
                 }
@@ -86,13 +86,13 @@ public class SchematicStreamer extends NBTStreamer {
                     int second = (value & 0xF0) >> 4;
                     int gIndex = index << 1;
                     if (first != 0) {
-                        Integer prev = addMap.get(gIndex);
-                        int val = (prev == null ? 0 : prev) | (first << 4);
+                        int prev = addMap.get(gIndex);
+                        int val = prev | (first << 4);
                         addMap.put(gIndex, val);
                     }
                     if (second != 0) {
-                        Integer prev = addMap.get(gIndex + 1);
-                        int val = (prev == null ? 0 : prev) | (second << 4);
+                        int prev = addMap.get(gIndex + 1);
+                        int val = prev | (second << 4);
                         addMap.put(gIndex + 1, val);
                     }
                 }
@@ -257,10 +257,9 @@ public class SchematicStreamer extends NBTStreamer {
             addBlockReaders();
             readFully();
             if (!addMap.isEmpty()) {
-                for (Int2ObjectMap.Entry<Integer> entry : addMap.int2ObjectEntrySet()) {
+                for (Int2IntMap.Entry entry : addMap.int2IntEntrySet()) {
                     int idx = entry.getIntKey();
-                    Integer valObj = entry.getValue();
-                    int val = valObj == null ? 0 : valObj;
+                    int val = entry.getIntValue();
                     if (val != 0) fc.setAdd(idx, val);
                 }
                 addMap.clear();
