@@ -332,7 +332,8 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 }
             }
             if (mask == 0 || mask == 65535 && hasEntities(nmsChunk)) {
-                S21PacketChunkData packet = new S21PacketChunkData(nmsChunk, false, 65280);
+                // Send the full chunk to prevent client desyncs
+                S21PacketChunkData packet = new S21PacketChunkData(nmsChunk, false, 65535);
                 for (EntityPlayerMP player : players) {
                     player.playerNetServerHandler.sendPacket(packet);
                 }
@@ -395,7 +396,8 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
             if (size.intValue() > 64) {
                 Chunk mcChunk = getCachedChunk(getWorld(), chunk.getX(), chunk.getZ());
                 if (mcChunk != null) {
-                    sendChunk(mcChunk, chunk.getBitMask());
+                    // Send a full chunk when too many blocks changed
+                    sendChunk(mcChunk, 65535);
                 }
                 return;
             }
