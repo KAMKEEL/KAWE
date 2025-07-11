@@ -33,3 +33,6 @@ Have an idea for an optimization, or a cool feature?
  - I'll accept most PR's
  - Let me know what you've tested / what may need further testing
  - If you need any help, create a ticket or discuss on [Discord](https://discord.gg/ngZCzbU)
+
+## Hybrid server support
+KAWE can run on servers that combine Bukkit and Forge without requiring both the Bukkit and Forge editions of WorldEdit. When a Forge version of WorldEdit is detected, the Bukkit plugin will no longer download or load the Bukkit WorldEdit jar.

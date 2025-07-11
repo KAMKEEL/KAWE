@@ -23,12 +23,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPInputStream;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class CorruptSchematicStreamer {
 
     private final InputStream stream;
     private final UUID uuid;
     private FaweClipboard fc;
+    private final Int2ObjectMap<Integer> addMap = new Int2ObjectOpenHashMap<>();
     final AtomicInteger volume = new AtomicInteger();
     final AtomicInteger width = new AtomicInteger();
     final AtomicInteger height = new AtomicInteger();
@@ -192,13 +195,64 @@ public class CorruptSchematicStreamer {
                             int first = value & 0x0F;
                             int second = (value & 0xF0) >> 4;
                             int gIndex = i << 1;
-                            if (first != 0) fc.setAdd(gIndex, first);
-                            if (second != 0) fc.setAdd(gIndex + 1, second);
+                            if (first != 0) {
+                                Integer prev = addMap.get(gIndex);
+                                int val = (prev == null ? 0 : prev) | first;
+                                addMap.put(gIndex, val);
+                            }
+                            if (second != 0) {
+                                Integer prev = addMap.get(gIndex + 1);
+                                int val = (prev == null ? 0 : prev) | second;
+                                addMap.put(gIndex + 1, val);
+                            }
                         }
                     } else {
                         for (int i = 0; i < length; i++) {
                             int value = in.read();
-                            if (value != 0) fc.setAdd(i, value);
+                            if (value != 0) {
+                                Integer prev = addMap.get(i);
+                                int val = (prev == null ? 0 : prev) | value;
+                                addMap.put(i, val);
+                            }
+                        }
+                    }
+                }
+            });
+            match("AddBlocksExtra", new CorruptSchematicStreamer.CorruptReader() {
+                @Override
+                public void run(DataInputStream in) throws IOException {
+                    int length = in.readInt();
+                    int expected = volume.get();
+                    if (expected == 0) {
+                        expected = length * 2;
+                        volume.set(expected);
+                    }
+                    setupClipboard();
+                    if (expected == length * 2) {
+                        for (int i = 0; i < length; i++) {
+                            int value = in.read();
+                            int first = value & 0x0F;
+                            int second = (value & 0xF0) >> 4;
+                            int gIndex = i << 1;
+                            if (first != 0) {
+                                Integer prev = addMap.get(gIndex);
+                                int val = (prev == null ? 0 : prev) | (first << 4);
+                                addMap.put(gIndex, val);
+                            }
+                            if (second != 0) {
+                                Integer prev = addMap.get(gIndex + 1);
+                                int val = (prev == null ? 0 : prev) | (second << 4);
+                                addMap.put(gIndex + 1, val);
+                            }
+                        }
+                    } else {
+                        for (int i = 0; i < length; i++) {
+                            int value = in.read();
+                            if (value != 0) {
+                                Integer prev = addMap.get(i);
+                                int val = (prev == null ? 0 : prev) | (value << 4);
+                                addMap.put(i, val);
+                            }
                         }
                     }
                 }
@@ -219,6 +273,15 @@ public class CorruptSchematicStreamer {
             CuboidRegion region = new CuboidRegion(min, min.add(dimensions.getBlockX(), dimensions.getBlockY(), dimensions.getBlockZ()).subtract(Vector.ONE));
             fc.setOrigin(offset);
             final BlockArrayClipboard clipboard = new BlockArrayClipboard(region, fc);
+            if (!addMap.isEmpty()) {
+                for (Int2ObjectMap.Entry<Integer> entry : addMap.int2ObjectEntrySet()) {
+                    int idx = entry.getIntKey();
+                    Integer valObj = entry.getValue();
+                    int val = valObj == null ? 0 : valObj;
+                    if (val != 0) fc.setAdd(idx, val);
+                }
+                addMap.clear();
+            }
             match("TileEntities", new CorruptSchematicStreamer.CorruptReader() {
                 @Override
                 public void run(DataInputStream in) throws IOException {
