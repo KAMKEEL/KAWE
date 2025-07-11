@@ -61,6 +61,7 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
     protected static Method methodFromNative;
     protected static Method methodToNative;
     protected static ExtendedBlockStorage emptySection;
+    protected static final java.lang.reflect.Field NEID_FIELD;
 
 
     static {
@@ -74,6 +75,13 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+        java.lang.reflect.Field f = null;
+        try {
+            f = ExtendedBlockStorage.class.getDeclaredField("block16BArray");
+            f.setAccessible(true);
+        } catch (Throwable ignore) {
+        }
+        NEID_FIELD = f;
     }
 
 
@@ -167,19 +175,35 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
 
     @Override
     public int getCombinedId4Data(ExtendedBlockStorage ls, int x, int y, int z) {
+        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
+        if (NEID_FIELD != null) {
+            try {
+                char[] neid = (char[]) NEID_FIELD.get(ls);
+                if (neid != null) {
+                    int id = neid[i] & 0xFFFF;
+                    if (id != 0) {
+                        NibbleArray data = ls.getMetadataArray();
+                        int meta = data != null && FaweCache.hasData(id) ?
+                                data.get(x & 15, y & 15, z & 15) : 0;
+                        return (id << 4) | meta;
+                    } else {
+                        return 0;
+                    }
+                }
+            } catch (Throwable ignore) {
+            }
+        }
         byte[] ids = ls.getBlockLSBArray();
         NibbleArray currentDataArray = ls.getMetadataArray();
         NibbleArray currentExtraArray = ls.getBlockMSBArray();
-        int i = FaweCache.getJ(y & 15, z & 15, x & 15);
         int id = (ids[i] & 0xFF);
         if (currentExtraArray != null) {
-            id += (currentExtraArray.get(x & 15, y & 15, z & 15)) << 8;
+            id |= (currentExtraArray.get(x & 15, y & 15, z & 15)) << 8;
         }
-        if (currentDataArray != null && FaweCache.hasData(id)) {
-            return (id << 4) + currentDataArray.get(x & 15, y & 15, z & 15);
-        } else {
-            return (id << 4);
-        }
+        int meta = currentDataArray != null && FaweCache.hasData(id)
+                ? currentDataArray.get(x & 15, y & 15, z & 15)
+                : 0;
+        return (id << 4) | meta;
     }
 
     @Override
@@ -368,6 +392,13 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 });
             }
             if (size.intValue() == 0) return;
+            if (size.intValue() > 64) {
+                Chunk mcChunk = getCachedChunk(getWorld(), chunk.getX(), chunk.getZ());
+                if (mcChunk != null) {
+                    sendChunk(mcChunk, chunk.getBitMask());
+                }
+                return;
+            }
             S22PacketMultiBlockChange packet = new S22PacketMultiBlockChange();
             ByteBuf byteBuf = UnpooledByteBufAllocator.DEFAULT.buffer();
             final PacketBuffer buffer = new PacketBuffer(byteBuf);
@@ -379,8 +410,11 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 public void run(int localX, int y, int localZ, int combined) {
                     short index = (short) (localX << 12 | localZ << 8 | y);
                     buffer.writeShort(index);
-                    int blockId = combined & 0xFFF; // Mask out metadata bits to prevent crash
-                    buffer.writeVarIntToBuffer(blockId);
+                    int value = combined;
+                    if (NEID_FIELD == null) {
+                        value &= 0xFFFF;
+                    }
+                    buffer.writeVarIntToBuffer(value);
                 }
             });
             packet.readPacketData(buffer);
@@ -426,21 +460,26 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
                 ExtendedBlockStorage section = sections[layer];
                 if (section != null) {
                     byte[] currentIdArray = section.getBlockLSBArray();
-                    NibbleArray currentExtendedArray = section.getBlockMSBArray(); // Get the extended array
-                    NibbleArray currentDataArray = section.getMetadataArray(); // Get the metadata array
+                    NibbleArray currentExtendedArray = section.getBlockMSBArray();
+                    NibbleArray currentDataArray = section.getMetadataArray();
+                    char[] neid = null;
+                    if (NEID_FIELD != null) {
+                        try { neid = (char[]) NEID_FIELD.get(section); } catch (Throwable ignore) {}
+                    }
 
                     for (int j = 0; j < currentIdArray.length; j++) {
                         int x = FaweCache.getX(layer, j);
                         int y = FaweCache.getY(layer, j);
                         int z = FaweCache.getZ(layer, j);
 
-                        int idLSB = currentIdArray[j] & 0xFF; // Extract LSB ID
-
-                        // Extract MSB ID and handle cases where the extended array is null
-                        int idMSB = currentExtendedArray != null ? currentExtendedArray.get(x, y & 15, z) & 0xFF : 0;
-
-                        // Combine LSB and MSB to get the final ID
-                        int id = (idMSB << 8) | idLSB;
+                        int id;
+                        if (neid != null) {
+                            id = neid[j] & 0xFFFF;
+                        } else {
+                            int idLSB = currentIdArray[j] & 0xFF;
+                            int idMSB = currentExtendedArray != null ? currentExtendedArray.get(x, y & 15, z) & 0xFF : 0;
+                            id = (idMSB << 8) | idLSB;
+                        }
 
                         byte data = (byte) (currentDataArray != null ? currentDataArray.get(x, y & 15, z) : 0);
                         previous.setBlock(x, y, z, id, data);
