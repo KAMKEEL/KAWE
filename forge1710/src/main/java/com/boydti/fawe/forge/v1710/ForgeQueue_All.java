@@ -401,7 +401,7 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
             chunk.forEachQueuedBlock(new FaweChunkVisitor() {
                 @Override
                 public void run(int localX, int y, int localZ, int combined) {
-                    short index = (short) (localX << 12 | localZ << 8 | y);
+                    short index = (short) (y << 12 | localZ << 8 | localX);
                     buffer.writeShort(index);
                     int value = combined;
                     if (NEID_FIELD == null) {

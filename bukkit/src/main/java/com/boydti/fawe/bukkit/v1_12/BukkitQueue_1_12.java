@@ -605,7 +605,7 @@ public class BukkitQueue_1_12 extends BukkitQueue_0<net.minecraft.server.v1_12_R
             chunk.forEachQueuedBlock(new FaweChunkVisitor() {
                 @Override
                 public void run(int localX, int y, int localZ, int combined) {
-                    short index = (short) (localX << 12 | localZ << 8 | y);
+                    short index = (short) (y << 12 | localZ << 8 | localX);
                     if (combined < 16) combined = 0;
                     buffer.writeShort(index);
                     buffer.d(combined);
