@@ -57,20 +57,27 @@ public class BukkitMain extends JavaPlugin {
     public void onEnable() {
         Plugin toLoad = null;
         if (Bukkit.getPluginManager().getPlugin("WorldEdit") == null) {
+            boolean forgeWE = false;
             try {
-                File output = new File(this.getDataFolder().getParentFile(), "WorldEdit.jar");
-                byte[] weJar = Jars.WE_B_6_1_7_2.download();
-                try (FileOutputStream fos = new FileOutputStream(output)) {
-                    fos.write(weJar);
+                Class.forName("com.sk89q.worldedit.forge.ForgeWorldEdit");
+                forgeWE = true;
+            } catch (Throwable ignore) {}
+            if (!forgeWE) {
+                try {
+                    File output = new File(this.getDataFolder().getParentFile(), "WorldEdit.jar");
+                    byte[] weJar = Jars.WE_B_6_1_7_2.download();
+                    try (FileOutputStream fos = new FileOutputStream(output)) {
+                        fos.write(weJar);
+                    }
+                    toLoad = Bukkit.getPluginManager().loadPlugin(output);
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    Fawe.debug("====== INSTALL WORLDEDIT ======");
+                    Fawe.debug("FAWE requires WorldEdit to function correctly");
+                    Fawe.debug("Info: https://github.com/boy0001/FastAsyncWorldedit/releases/");
+                    Fawe.debug("===============================");
+                    return;
                 }
-                toLoad = Bukkit.getPluginManager().loadPlugin(output);
-            } catch (Throwable e) {
-                e.printStackTrace();
-                Fawe.debug("====== INSTALL WORLDEDIT ======");
-                Fawe.debug("FAWE requires WorldEdit to function correctly");
-                Fawe.debug("Info: https://github.com/boy0001/FastAsyncWorldedit/releases/");
-                Fawe.debug("===============================");
-                return;
             }
         }
         FaweBukkit imp = new FaweBukkit(this);

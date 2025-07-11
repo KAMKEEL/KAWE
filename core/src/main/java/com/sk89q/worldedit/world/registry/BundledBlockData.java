@@ -403,13 +403,19 @@ public class BundledBlockData {
             if (entry == null) {
                 int index = id.lastIndexOf('_');
                 if (index == -1) {
+                    index = id.lastIndexOf(':');
+                }
+                if (index == -1) {
                     return null;
                 }
-                String data = id.substring(index + 1, id.length());
+                String data = id.substring(index + 1);
                 id = id.substring(0, index);
                 entry = localIdMap.get(id + ":" + data);
                 if (entry == null) {
-                    return null;
+                    entry = localIdMap.get(id + "_" + data);
+                    if (entry == null) {
+                        return null;
+                    }
                 }
             }
         }

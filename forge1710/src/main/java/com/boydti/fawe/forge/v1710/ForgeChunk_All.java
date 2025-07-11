@@ -35,30 +35,45 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
     public final byte[][] byteIds;
     public final NibbleArray[] extended;
     public final NibbleArray[] datas;
+    public final NibbleArray[] extendedHigh;
+
+    private static final java.lang.reflect.Field NEID_FIELD;
+
+    static {
+        java.lang.reflect.Field f = null;
+        try {
+            f = ExtendedBlockStorage.class.getDeclaredField("block16BArray");
+            f.setAccessible(true);
+        } catch (Throwable ignore) {
+        }
+        NEID_FIELD = f;
+    }
 
     public ForgeChunk_All(FaweQueue parent, int x, int z) {
         super(parent, x, z);
         this.byteIds = new byte[16][];
         this.extended = new NibbleArray[16];
         this.datas = new NibbleArray[16];
+        this.extendedHigh = new NibbleArray[16];
     }
 
-    public ForgeChunk_All(FaweQueue parent, int x, int z, char[][] ids, short[] count, short[] air, byte[] heightMap, byte[][] byteIds, NibbleArray[] datas, NibbleArray[] extended) {
+    public ForgeChunk_All(FaweQueue parent, int x, int z, char[][] ids, short[] count, short[] air, byte[] heightMap, byte[][] byteIds, NibbleArray[] datas, NibbleArray[] extended, NibbleArray[] extendedHigh) {
         super(parent, x, z, ids, count, air, heightMap);
         this.byteIds = byteIds;
         this.datas = datas;
         this.extended = extended;
+        this.extendedHigh = extendedHigh;
     }
 
     @Override
     public CharFaweChunk copy(boolean shallow) {
         ForgeChunk_All copy;
         if (shallow) {
-            copy = new ForgeChunk_All(getParent(), getX(), getZ(), ids, count, air, heightMap, byteIds, datas, extended);
+            copy = new ForgeChunk_All(getParent(), getX(), getZ(), ids, count, air, heightMap, byteIds, datas, extended, extendedHigh);
             copy.biomes = biomes;
             copy.chunk = chunk;
         } else {
-            copy = new ForgeChunk_All(getParent(), getX(), getZ(), (char[][]) MainUtil.copyNd(ids), count.clone(), air.clone(), heightMap.clone(), (byte[][]) MainUtil.copyNd(byteIds), datas.clone(), extended.clone());
+            copy = new ForgeChunk_All(getParent(), getX(), getZ(), (char[][]) MainUtil.copyNd(ids), count.clone(), air.clone(), heightMap.clone(), (byte[][]) MainUtil.copyNd(byteIds), datas.clone(), extended.clone(), extendedHigh.clone());
             copy.biomes = biomes;
             copy.chunk = chunk;
             copy.biomes = biomes.clone();
@@ -85,6 +100,35 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
         return extended[i];
     }
 
+    public NibbleArray getHighIdArray(int i) {
+        return extendedHigh[i];
+    }
+
+    @Override
+    public int getBlockCombinedId(int x, int y, int z) {
+        int i = FaweCache.getI(y, z, x);
+        char[] array = getIdArray(i);
+        if (array == null) {
+            return 0;
+        }
+        int j = FaweCache.getJ(y, z, x);
+        int combined = array[j];
+        if (combined == 0) {
+            return 0;
+        }
+        int id = FaweCache.getId(combined);
+        NibbleArray extra = extended[i];
+        if (extra != null) {
+            id |= (extra.get(x, y & 15, z) & 0xF) << 8;
+        }
+        NibbleArray high = extendedHigh[i];
+        if (high != null) {
+            id |= (high.get(x, y & 15, z) & 0xF) << 12;
+        }
+        int data = FaweCache.getData(combined);
+        return (id << 4) | data;
+    }
+
     @Override
     public void setBlock(int x, int y, int z, int id) {
         setBlock(x, y, z, id, 0);
@@ -102,21 +146,24 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
         if (vs == null) {
             vs = this.byteIds[i] = new byte[4096];
         }
-        this.count[i]++;
+        char old = vs2[j];
+        if (old == 0) {
+            this.count[i]++;
+        } else if (old == 1) {
+            this.air[i]--;
+        }
 
-        if(id == 0){
+        if (id == 0) {
             this.air[i]++;
-
-            /**
-             * @TODO REQUIRES MORE TESTING
-             *      for some reason the extended ID breaks when its 1 or 0????
-             *      (0 supposed to indicate no change to the block and 1 supposed to indicate a change???)
-             *      (Either way anything below 16 after bitshift magic will result in 0 as the ID)
-             */
-            vs2[j] = (char) 2;
+            // mark this position as explicitly set to air
+            vs2[j] = (char) 1;
             vs[j] = 0;
-        }else{
-            vs2[j] = (char) ((id << 4) + data);
+            NibbleArray ext = extended[i];
+            if (ext != null) ext.set(x, y & 15, z, 0);
+            NibbleArray high = extendedHigh[i];
+            if (high != null) high.set(x, y & 15, z, 0);
+        } else {
+            vs2[j] = (char) (((id & 4095) << 4) | (data & 0xF));
             vs[j] = (byte) id;
         }
 
@@ -132,7 +179,20 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
             if (nibble == null) {
                 extended[i] = nibble = new NibbleArray(4096, 4);
             }
-            nibble.set(x, y & 15, z, id >> 8);
+            nibble.set(x, y & 15, z, (id >> 8) & 0xF);
+        } else {
+            NibbleArray nibble = extended[i];
+            if (nibble != null) nibble.set(x, y & 15, z, 0);
+        }
+        if (id > 4095) {
+            NibbleArray nibble = extendedHigh[i];
+            if (nibble == null) {
+                extendedHigh[i] = nibble = new NibbleArray(4096, 4);
+            }
+            nibble.set(x, y & 15, z, (id >> 12) & 0xF);
+        } else {
+            NibbleArray nibble = extendedHigh[i];
+            if (nibble != null) nibble.set(x, y & 15, z, 0);
         }
 
     }
@@ -264,6 +324,7 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                 int countAir = this.getAir(j);
                 NibbleArray newDataArray = this.getDataArray(j);
                 NibbleArray extendedArray = this.getExtendedIdArray(j);
+                NibbleArray highArray = this.getHighIdArray(j);
                 ExtendedBlockStorage section = sections[j];
                 if ((section == null)) {
                     if (count == countAir) {
@@ -276,6 +337,19 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                     }
                     if (extendedArray != null) {
                         section.setBlockMSBArray(extendedArray);
+                    }
+                    if (NEID_FIELD != null) {
+                        char[] neid = new char[4096];
+                        for (int k = 0; k < neid.length; k++) {
+                            int x = FaweCache.getX(0, k);
+                            int y = FaweCache.getY(0, k);
+                            int z = FaweCache.getZ(0, k);
+                            int id = newIdArray[k] & 0xFF;
+                            if (extendedArray != null) id |= (extendedArray.get(x, y, z) & 0xF) << 8;
+                            if (highArray != null) id |= (highArray.get(x, y, z) & 0xF) << 12;
+                            neid[k] = (char) id;
+                        }
+                        try { NEID_FIELD.set(section, neid); } catch (Throwable ignore) {}
                     }
                     continue;
                 } else if (count >= 4096) {
@@ -294,11 +368,28 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                     } else if (section.getBlockMSBArray() != null) {
                         Arrays.fill(section.getBlockMSBArray().data, (byte) 0);
                     }
+                    if (NEID_FIELD != null) {
+                        char[] neid = new char[4096];
+                        for (int k = 0; k < neid.length; k++) {
+                            int x = FaweCache.getX(0, k);
+                            int y = FaweCache.getY(0, k);
+                            int z = FaweCache.getZ(0, k);
+                            int id = newIdArray[k] & 0xFF;
+                            if (extendedArray != null) id |= (extendedArray.get(x, y, z) & 0xF) << 8;
+                            if (highArray != null) id |= (highArray.get(x, y, z) & 0xF) << 12;
+                            neid[k] = (char) id;
+                        }
+                        try { NEID_FIELD.set(section, neid); } catch (Throwable ignore) {}
+                    }
                     continue;
                 }
                 byte[] currentIdArray = section.getBlockLSBArray();
                 NibbleArray currentDataArray = section.getMetadataArray();
                 NibbleArray currentExtraArray = section.getBlockMSBArray();
+                char[] currentNeid = null;
+                if (NEID_FIELD != null) {
+                    try { currentNeid = (char[]) NEID_FIELD.get(section); } catch (Throwable ignore) {}
+                }
                 boolean data = currentDataArray != null && newDataArray != null;
                 if (currentDataArray == null && newDataArray != null) {
                     section.setBlockMetadataArray(newDataArray);
@@ -307,6 +398,7 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                 if (currentExtraArray == null && extendedArray != null) {
                     section.setBlockMSBArray(extendedArray);
                 }
+                boolean neid = currentNeid != null && NEID_FIELD != null;
                 int solid = 0;
                 char[] charArray = this.getIdArray(j);
                 for (int k = 0; k < newIdArray.length; k++) {
@@ -316,6 +408,9 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                             if (currentIdArray[k] != 0) {
                                 solid++;
                             }
+                            if (neid && currentNeid[k] != 0) {
+                                currentNeid[k] = 0;
+                            }
                             continue;
                         case 1:
                             currentIdArray[k] = 0;
@@ -324,6 +419,9 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                                 int y = FaweCache.getY(0, k);
                                 int z = FaweCache.getZ(0, k);
                                 currentExtraArray.set(x, y, z, 0);
+                            }
+                            if (neid) {
+                                currentNeid[k] = 0;
                             }
                             continue;
                         default:
@@ -356,6 +454,15 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                                 int y = FaweCache.getY(0, k);
                                 int z = FaweCache.getZ(0, k);
                                 currentExtraArray.set(x, y, z, 0);
+                            }
+                            if (neid) {
+                                int x = FaweCache.getX(0, k);
+                                int y = FaweCache.getY(0, k);
+                                int z = FaweCache.getZ(0, k);
+                                int id = newIdArray[k] & 0xFF;
+                                if (extendedArray != null) id |= (extendedArray.get(x, y, z) & 0xF) << 8;
+                                if (highArray != null) id |= (highArray.get(x, y, z) & 0xF) << 12;
+                                currentNeid[k] = (char) id;
                             }
                             continue;
                     }
