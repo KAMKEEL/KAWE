@@ -141,6 +141,14 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
                 extended[i] = nibble = new NibbleArray(4096, 4);
             }
             nibble.set(x, y & 15, z, id >> 8);
+        } else {
+            // Clear MSB when placing blocks without extended IDs to avoid
+            // leftover values causing ghost blocks. TODO: ensure extended data
+            // is reset for non-extended block changes.
+            NibbleArray nibble = extended[i];
+            if (nibble != null) {
+                nibble.set(x, y & 15, z, 0);
+            }
         }
 
     }
