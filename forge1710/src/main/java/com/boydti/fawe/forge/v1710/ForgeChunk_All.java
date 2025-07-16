@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import com.boydti.fawe.object.visitor.FaweChunkVisitor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -85,10 +86,31 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
         return extended[i];
     }
 
+
     @Override
     public int getBlockCombinedId(int x, int y, int z) {
         int combined = super.getBlockCombinedId(x, y, z);
         return combined == 1 ? 0 : combined;
+    }
+
+    @Override
+    public void forEachQueuedBlock(FaweChunkVisitor onEach) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int z = 0; z < 16; z++) {
+                for (int x = 0; x < 16; x++) {
+                    char[] array = getIdArray(FaweCache.getI(y, z, x));
+                    if (array == null) {
+                        continue;
+                    }
+                    char raw = array[FaweCache.getJ(y, z, x)];
+                    if (raw == 0) {
+                        continue;
+                    }
+                    int combined = raw == 1 ? 0 : raw;
+                    onEach.run(x, y, z, combined);
+                }
+            }
+        }
     }
 
     @Override
