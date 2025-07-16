@@ -373,18 +373,21 @@ public class ForgeQueue_All extends NMSMappedFaweQueue<World, Chunk, ExtendedBlo
             final PacketBuffer buffer = new PacketBuffer(byteBuf);
             buffer.writeInt(chunk.getX());
             buffer.writeInt(chunk.getZ());
-            buffer.writeVarIntToBuffer(size.intValue());
+            int count = size.intValue();
+            if (count > 65535) {
+                // Fallback to sending the entire chunk if too many updates
+                buffer.release();
+                sendChunk(chunk.getX(), chunk.getZ(), chunk.getBitMask());
+                return;
+            }
+            buffer.writeShort((short) count);
             chunk.forEachQueuedBlock(new FaweChunkVisitor() {
                 @Override
                 public void run(int localX, int y, int localZ, int combined) {
                     short index = (short) (localX << 12 | localZ << 8 | y);
                     buffer.writeShort(index);
-                    if (combined == 1) {
-                        buffer.writeVarIntToBuffer(0); // cleared air
-                    } else {
-                        // Mask to 16 bits so high bits don't corrupt extended IDs
-                        buffer.writeVarIntToBuffer(combined & 0xFFFF);
-                    }
+                    short value = (short) (combined == 1 ? 0 : (combined & 0xFFFF));
+                    buffer.writeShort(value);
                 }
             });
             packet.readPacketData(buffer);
