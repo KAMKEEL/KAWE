@@ -126,6 +126,16 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
         }else{
             vs2[j] = (char) ((id << 4) + data);
             vs[j] = (byte) id;
+            NibbleArray nibble = extended[i];
+            if (id > 255) {
+                if (nibble == null) {
+                    extended[i] = nibble = new NibbleArray(4096, 4);
+                }
+                nibble.set(x, y & 15, z, id >> 8);
+            } else if (nibble != null) {
+                // Clear any leftover extended id data when setting a low id
+                nibble.set(x, y & 15, z, 0);
+            }
         }
 
         if (data != 0) {
@@ -135,13 +145,7 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
             }
             dataArray.set(x, y & 15, z, data);
         }
-        if (id > 255) {
-            NibbleArray nibble = extended[i];
-            if (nibble == null) {
-                extended[i] = nibble = new NibbleArray(4096, 4);
-            }
-            nibble.set(x, y & 15, z, id >> 8);
-        }
+        // extended id handling moved above
 
     }
 
