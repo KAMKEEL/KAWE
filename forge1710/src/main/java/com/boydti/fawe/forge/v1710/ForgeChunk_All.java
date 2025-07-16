@@ -87,8 +87,11 @@ public class ForgeChunk_All extends CharFaweChunk<Chunk, ForgeQueue_All> {
 
     @Override
     public int getBlockCombinedId(int x, int y, int z) {
-        int combined = super.getBlockCombinedId(x, y, z);
-        return combined == 1 ? 0 : combined;
+        // Return the stored combined id directly so that sentinel
+        // values for cleared blocks (value 1) are preserved. These
+        // sentinel values allow the network update logic to
+        // correctly notify clients about air blocks.
+        return super.getBlockCombinedId(x, y, z);
     }
 
     @Override
